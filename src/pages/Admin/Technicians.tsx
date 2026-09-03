@@ -1,5 +1,5 @@
 import {Button} from "../../components/Button"
-import { TechnicianTable } from "./Technicians/components/TechnicianTable/index"
+import { TechnicianTable } from "./components/Technicians/TechnicianTable"
 
 export function Technicians() {
     return (
