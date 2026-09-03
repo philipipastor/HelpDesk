@@ -1,5 +1,5 @@
-import { Table } from "../../../../../components/Table"
-import { TechnicianRow } from "../TechnicianRow"
+import { Table } from "../../../../components/Table"
+import { TechnicianRow } from "./TechnicianRow"
 
 const technicians = [
     {

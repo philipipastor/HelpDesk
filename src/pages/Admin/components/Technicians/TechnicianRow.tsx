@@ -1,6 +1,6 @@
-import { Avatar } from "../../../../../components/Avatar"
+import { Avatar } from "../../../../components/Avatar"
 
-import type { Technician } from "../../../../../types/technician"
+import type { Technician } from "../../../../types/technician"
 
 type Props = {
     technician: Technician
