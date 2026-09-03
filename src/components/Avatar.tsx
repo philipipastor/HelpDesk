@@ -8,6 +8,7 @@ export function Avatar({ name }: Props) {
         .map((name) => name[0])
         .join("")
         .slice(0, 2)
+        .toUpperCase()
 
     return (
         <div>
