@@ -1,4 +1,5 @@
 import { Table } from "../../../../components/Table"
+
 import { ClientRow } from "./ClientRow"
 
 const clients = [
@@ -8,36 +9,44 @@ const clients = [
         email: "carlos.silva@example.com"
     },
     {
-        id:"2",
-        name: "Philipi pastor",
+        id: "2",
+        name: "Philipi Pastor",
         email: "philipipastor@email.com"
     },
     {
         id: "3",
-        name: "Thaina rodrigues",
+        name: "Thaina Rodrigues",
         email: "thaina@email.com"
     }
 ]
 
 export function ClientTable() {
-    return(
-        <Table>
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>E-mail</th>
-                </tr>
-            </thead>
+    return (
+        <div className="overflow-hidden rounded-lg border border-gray-500">
+            <Table className="w-full border-collapse">
+                <thead>
+                    <tr className="border-b border-gray-500 text-left">
+                        <th className="px-4 py-3 text-xs font-normal text-gray-400">
+                            Nome
+                        </th>
 
-        <tbody>
-            {clients.map((client) => (
-                <ClientRow
-                    key={client.id}
-                    client={client}
-                />
-            ))}
-        </tbody>
-            
-        </Table>
+                        <th className="px-4 py-3 text-xs font-normal text-gray-400">
+                            E-mail
+                        </th>
+
+                        <th className="w-24"></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {clients.map((client) => (
+                        <ClientRow
+                            key={client.id}
+                            client={client}
+                        />
+                    ))}
+                </tbody>
+            </Table>
+        </div>
     )
 }
