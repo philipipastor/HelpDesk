@@ -1,5 +1,6 @@
+import iconEdit from "../../../../assets/iconEdit.png"
+import { Button } from "../../../../components/Button"
 import { Avatar } from "../../../../components/Avatar"
-
 import type { Technician } from "../../../../types/technician"
 
 type Props = {
@@ -34,9 +35,9 @@ export function TechnicianRow({ technician }: Props) {
             </td>
 
             <td>
-                <button type="button">
-                    ✎
-                </button>
+                <Button variant="icon">
+                    <img src={iconEdit} alt="ícone de editar"/>
+                </Button>
             </td>
         </tr>
     )
