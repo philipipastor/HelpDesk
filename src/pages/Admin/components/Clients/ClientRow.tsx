@@ -17,7 +17,7 @@ export function ClientRow({ client }: Props) {
                 <div className="flex items-center gap-3">
                     <Avatar name={client.name} />
 
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-gray-100">
                         {client.name}
                     </span>
                 </div>
