@@ -6,44 +6,48 @@ const services = [
         id: "1",
         title: "instalação de rede",
         amount: "180",
-        status: "Ativo",
+        status: true,
     },
         {
         id: "2",
         title: "Recuperação de daos",
         amount: "1200",
-        status: "Desativado"
+        status: false
     }
 ]
 
 export function ServicesTable(){
     return(
-        <Table>
-            <thead>
-                <tr>
-                    <th>
-                        Título
-                    </th>
+        <div className="overflow-hidden rounded-lg border border-gray-500"> 
+            <Table className="w-full border-collapse">
+                <thead>
+                    <tr className="border-b border-gray-500 text-left">
+                        <th className="px-4 py-3 text-xs font-normal text-gray-400">
+                            Título
+                        </th>
 
-                    <th>
-                        Valor
-                    </th>
+                        <th className="px-4 py-3 text-xs font-normal text-gray-400">
+                            Valor
+                        </th>
 
-                    <th>
-                        Status
-                    </th>
-                </tr>
-            </thead>
+                        <th className="px-4 py-3 text-xs font-normal text-gray-400">
+                            Status
+                        </th>
 
-            <tbody>
-                {services.map((service) => (
-                    <ServicesRow
-                        key={service.id}
-                        service={service}
-                    />
-                ))}
-            </tbody>
-        </Table>
+                        <th className="w-24"></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {services.map((service) => (
+                        <ServicesRow
+                            key={service.id}
+                            service={service}
+                        />
+                    ))}
+                </tbody>
+            </Table>
+        </div>
 
     )
 }
