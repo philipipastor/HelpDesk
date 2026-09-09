@@ -1,0 +1,16 @@
+import { TicketTable } from "./components/Tickets/TicketTable"
+
+export function Tickets() {
+    return (
+        <main className="w-full px-10 py-10">
+            <header className="mb-6">
+                <h1 className="text-xl font-semibold text-[#2E3DA3]">
+                    Chamados
+                </h1>
+            </header>
+            
+            <TicketTable />
+        </main>
+
+    )
+}
