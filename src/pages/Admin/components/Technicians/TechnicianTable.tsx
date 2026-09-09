@@ -24,24 +24,26 @@ const technicians = [
 
 export function TechnicianTable() {
     return (
-        <Table>
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>E-mail</th>
-                    <th>Disponibilidade</th>
-                    <th></th>
-                </tr>
-            </thead>
+        <div className="overflow-hidden rounded-lg border border-gray-500">
+            <Table className="w-full border-collapse">
+                <thead>
+                    <tr className="border-b border-gray-500 text-left">
+                        <th className="px-4 py-3 text-xs font-normal text-gray-400">Nome</th>
+                        <th className="px-4 py-3 text-xs font-normal text-gray-400">E-mail</th>
+                        <th className="px-4 py-3 text-xs font-normal text-gray-400">Disponibilidade</th>
+                        <th className="px-4 py-3 text-xs font-normal text-gray-400"></th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                {technicians.map((technician) => (
-                    <TechnicianRow
-                        key={technician.id}
-                        technician={technician}
-                    />
-                ))}
-            </tbody>
-        </Table>
+                <tbody>
+                    {technicians.map((technician) => (
+                        <TechnicianRow
+                            key={technician.id}
+                            technician={technician}
+                        />
+                    ))}
+                </tbody>
+            </Table>
+        </div>
     )
 }
