@@ -1,5 +1,4 @@
 import { Button } from "../../../../components/Button"
-import { Status } from "../../../../components/Status"
 import type { Service } from "../../../../types/Services"
 import { useState } from "react"
 
@@ -12,7 +11,7 @@ type Props = {
 }
 
 export function ServicesRow({ service }: Props){
-    const [status, setStatus] = useState<boolean>(true);
+    const [status, setStatus] = useState<boolean>(service.status);
 
     return(
         <tr className="border-b text-gray-500 last:border-b-0">
@@ -25,7 +24,14 @@ export function ServicesRow({ service }: Props){
             </td>
 
             <td>
-                <Status active={status}/>
+                <span className={`rounded-full px-3 py-1 text-sm font-medium ${
+                        status
+                            ? "bg-green-100 text-green-600"
+                            : "bg-red-100 text-red-500"
+                    }`}
+                >
+                    {status ? "Ativo" : "Inativo"}
+                </span>
             </td>
 
             <td>
