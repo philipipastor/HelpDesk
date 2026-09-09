@@ -1,5 +1,6 @@
 export type Service = {
     id: string,
     title: string,
-    amount: string
+    amount: string,
+    status: boolean
 }
