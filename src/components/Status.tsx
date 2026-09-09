@@ -1,16 +1,32 @@
 type Props = {
-    active: boolean,
+    status: "open" | "in_progress" | "closed"
 }
 
-export function Status({ active }: Props) {
+const statusStyles = {
+    open: {
+        label: "Aberto",
+        className: "bg-red-100 text-red-500",
+    },
+
+    in_progress: {
+        label: "Em atendimento",
+        className: "bg-blue-100 text-blue-600",
+    },
+
+    closed: {
+        label: "Encerrado",
+        className: "bg-green-100 text-green-600",
+    },
+}
+
+export function Status({ status }: Props) {
+    const currentStatus = statusStyles[status]
+
     return (
-        <span className={`rounded-full px-3 py-1 text-sm font-medium ${
-                active
-                    ? "bg-[#508b2649] text-[#268b33]"
-                    : "bg-[#d03e3e54] text-[#D03E3E]"
-            }`}
+        <span
+            className={`inline-flex items-center whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium ${currentStatus.className}`}
         >
-            {active ? "Ativo" : "Inativo"}
+            {currentStatus.label}
         </span>
     )
 }
