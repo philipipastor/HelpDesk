@@ -1,8 +1,18 @@
+import { classMerge } from "../utils/ClassMerge"
+
 type Props = {
-    name: string
+    name: string,
+    variant?: "primary" | "secondary"
 }
 
-export function Avatar({ name }: Props) {
+const variants = {
+    Avatar: {
+        primary: "h-9 w-9",
+        secondary: "h-7 w-7"
+    }
+}
+
+export function Avatar({ name, variant = "primary" }: Props) {
     const initials = name
         .split(" ")
         .map((name) => name[0])
@@ -10,7 +20,7 @@ export function Avatar({ name }: Props) {
         .slice(0, 2)
 
     return (
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3546B3] text-xs uppercase text-gray-50">
+        <div className={classMerge(["flex items-center justify-center rounded-full bg-[#3546B3] text-xs uppercase text-gray-50"], variants.Avatar[variant])}>
             {initials}
         </div>
     )
