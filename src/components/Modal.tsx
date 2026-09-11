@@ -1,4 +1,5 @@
 import iconClosed from "../assets/x.png"
+import { createPortal } from "react-dom"
 
 type Props = {
     isOpen: boolean,
@@ -13,7 +14,7 @@ export function Modal({isOpen,title,onClose,children}: Props){
         return null
     }
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="w-full max-w-md rounded-lg bg-white">
                 
@@ -35,6 +36,9 @@ export function Modal({isOpen,title,onClose,children}: Props){
                     {children}
                 </div>
             </div>
-        </div>
+        </div>,
+        
+        document.body
     )
+    
 }
