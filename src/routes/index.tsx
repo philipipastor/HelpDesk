@@ -1,12 +1,28 @@
-import { BrowserRouter } from "react-router";
 
-//import { AuthRoutes } from "./authRoutes";
+import { AuthRoutes } from "./authRoutes";
 import { AdminRoutes } from "./adminRoutes";
+import { ClientRoutes } from "./clientRoutes"
 
 export function Routes(){
-    return(
-        <BrowserRouter>
-            <AdminRoutes/>
-        </BrowserRouter>
-    )
+    const user = {
+        role: "admin"
+    }
+
+    if(!user){
+        return <AuthRoutes/>
+    }
+
+    switch(user.role) {
+        case "admin":
+            return <AdminRoutes/>
+
+        case "client": 
+            return <ClientRoutes/>
+
+        case "technician":
+            return
+
+        default:
+            return <AuthRoutes/>
+    }
 }
