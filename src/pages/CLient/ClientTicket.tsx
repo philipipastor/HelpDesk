@@ -5,7 +5,7 @@ export function Tickets() {
         <main className="w-full px-10 py-10">
             <header className="mb-6">
                 <h1 className="text-xl font-semibold text-[#2E3DA3]">
-                    Chamados
+                    Meus Chamados
                 </h1>
             </header>
             
