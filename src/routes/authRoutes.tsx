@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router"
 
 import { SignIn } from "../pages/SignIn"
 import { SignUp } from "../pages/SignUp"
-import { AuthLayout } from "../components/AuthLayout"
+import { AuthLayout } from "../components/layout/AuthLayout"
 import { NotFound } from "../pages/NotFound"
 
 
