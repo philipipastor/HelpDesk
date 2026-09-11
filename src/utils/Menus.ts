@@ -6,7 +6,7 @@ import plus from "../assets/plus.png"
 
 export const Menus = {
     admin: [
-        { label: "Chamados", path: "/chamados", icon: listTickets },
+        { label: "Chamados", path: "/", icon: listTickets },
         { label: "Técnicos", path: "/tecnicos", icon: users },
         { label: "Clientes", path: "/clientes", icon: business },
         { label: "Serviços", path: "/serviços", icon: wrench },
