@@ -9,7 +9,7 @@ export function Services() {
     const [modal, setModal] = useState<boolean>(false)
 
     return (
-        <div>
+        <>
             <main className="w-full px-8 py-10">
                 <header className="mb-6 space-between flex items-center justify-between">
                     <h1 className="text-xl font-semibold text-[#2E3DA3]">
@@ -19,7 +19,7 @@ export function Services() {
                 </header>
                 
                 <ServicesTable />
-        </main>
+            </main>
             {modal && 
                 <Modal isOpen={modal} title="Cadastro de serviço" onClose={() => setModal(false)}>
                     <form>
@@ -29,6 +29,6 @@ export function Services() {
                     </form>
                 </Modal>
             }
-        </div>
+        </>
     )
 }
