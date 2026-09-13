@@ -8,7 +8,7 @@ export type Tickets = {
     id: string
     title: string
     service: Pick<Service, "title" | "amount">
-    cliente?: Pick<Client, "name">
+    client: Pick<Client, "name">
     technician: Pick<Technician, "name">
     status: "open" | "in_progress" | "closed"
 }
