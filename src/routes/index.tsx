@@ -2,10 +2,11 @@
 import { AuthRoutes } from "./authRoutes";
 import { AdminRoutes } from "./adminRoutes";
 import { ClientRoutes } from "./clientRoutes"
+import { TechnicianRoutes } from "./technicianRoutes";
 
 export function Routes(){
     const user = {
-        role: "admin"
+        role: "technician"
     }
 
     if(!user){
@@ -20,7 +21,7 @@ export function Routes(){
             return <ClientRoutes/>
 
         case "technician":
-            return
+            return <TechnicianRoutes/>
 
         default:
             return <AuthRoutes/>
