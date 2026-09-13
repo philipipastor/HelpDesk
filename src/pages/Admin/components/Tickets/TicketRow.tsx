@@ -41,12 +41,12 @@ export function TicketRow({ ticket }: Props) {
             <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
                     <Avatar
-                        name={ticket.cliente.name}
+                        name={ticket.client.name}
                         variant="secondary"
                     />
 
                     <span className="whitespace-nowrap text-sm text-gray-200">
-                        {ticket.cliente.name}
+                        {ticket.client.name}
                     </span>
                 </div>
             </td>
