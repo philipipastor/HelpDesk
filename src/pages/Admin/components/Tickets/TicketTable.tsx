@@ -11,7 +11,7 @@ const tickets: Tickets[] = [
             title: "Reparo de computador",
             amount: "100"
         },
-        cliente: {
+        client: {
             name: "John Doe"
         },
         technician: {
@@ -27,7 +27,7 @@ const tickets: Tickets[] = [
             title: "Reparo de computador",
             amount: "100"
         },
-        cliente: {
+        client: {
             name: "John Doe"
         },
         technician: {
@@ -43,7 +43,7 @@ const tickets: Tickets[] = [
             title: "Reparo de computador",
             amount: "100"
         },
-        cliente: {
+        client: {
             name: "John Doe"
         },
         technician: {
