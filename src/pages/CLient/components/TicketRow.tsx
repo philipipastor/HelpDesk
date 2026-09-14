@@ -1,4 +1,4 @@
-import type { Tickets } from "../../../types/Tickets"
+import type { Ticket } from "./TicketTable"
 
 import { Status } from "../../../components/Status"
 import { Button } from "../../../components/Button"
@@ -7,7 +7,7 @@ import { Avatar } from "../../../components/Avatar"
 import iconEdit from "../../../assets/iconEdit.png"
 
 type Props = {
-    ticket: Tickets
+    ticket: Ticket
 }
 
 export function TicketRow({ ticket }: Props) {
