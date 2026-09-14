@@ -6,11 +6,15 @@ import { Avatar } from "../../../../components/Avatar"
 
 import iconEdit from "../../../../assets/iconEdit.png"
 
+import { useNavigate } from "react-router"
+
 type Props = {
     ticket: Tickets
 }
 
 export function TicketRow({ ticket }: Props) {
+    const navigate = useNavigate()
+
     return (
         <tr className="border-b text-gray-500 last:border-b-0">
 
@@ -69,7 +73,7 @@ export function TicketRow({ ticket }: Props) {
             </td>
 
             <td className="px-4 py-3 flex items-center justify-end gap-2">
-                <Button variant="icon">
+                <Button variant="icon" onClick={() => navigate("/ticket/:id/status")}>
                     <img
                         src={iconEdit}
                         alt="ícone de editar"
