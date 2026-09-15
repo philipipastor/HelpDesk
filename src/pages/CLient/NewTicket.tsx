@@ -7,15 +7,15 @@ export function NewTicket() {
 
             <div className="mx-auto w-full max-w-5xl">
 
-                <h1 className="mb-6 text-2xl font-semibold text-blue-900">
+                <h1 className="mb-6 text-2xl font-semibold text-blue-dark">
                     Novo chamado
                 </h1>
 
-                <div className="grid grid-cols-[1fr_320px] overflow-hidden rounded-xl border border-gray-500 bg-white">
+                <div className="grid grid-cols-[1fr_320px] overflow-hidden rounded-xl border border-gray-500 bg-gray-600">
 
                     <section className="border-r border-gray-500 p-8">
 
-                        <h2 className="text-base font-semibold text-gray-900">
+                        <h2 className="text-base font-semibold text-gray-200">
                             Informações
                         </h2>
 
@@ -42,7 +42,7 @@ export function NewTicket() {
 
                                 <select
                                     defaultValue=""
-                                    className="w-full border-b border-gray-500 bg-transparent py-2 text-sm text-gray-400 outline-none"
+                                    className="w-full border-b border-gray-500 bg-transparent py-2 text-sm text-gray-100 outline-none focus:border-blue-base"
                                 >
                                     <option value="" disabled>
                                         Selecione a categoria de atendimento
@@ -72,7 +72,7 @@ export function NewTicket() {
 
                     <aside className="p-8">
 
-                        <h2 className="text-base font-semibold text-gray-900">
+                        <h2 className="text-base font-semibold text-gray-200">
                             Resumo
                         </h2>
 
@@ -86,7 +86,7 @@ export function NewTicket() {
                                 Categoria de serviço
                             </span>
 
-                            <p className="mt-1 text-sm font-medium text-gray-900">
+                            <p className="mt-1 text-sm font-medium text-gray-200">
                                 Erro de rede
                             </p>
 
@@ -98,7 +98,7 @@ export function NewTicket() {
                                 Custo inicial
                             </span>
 
-                            <p className="mt-1 text-xl font-semibold text-gray-900">
+                            <p className="mt-1 text-xl font-semibold text-gray-200">
                                 R$ 200,00
                             </p>
 

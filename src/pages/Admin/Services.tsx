@@ -12,7 +12,7 @@ export function Services() {
         <>
             <main className="w-full px-8 py-10">
                 <header className="mb-6 space-between flex items-center justify-between">
-                    <h1 className="text-xl font-semibold text-[#2E3DA3]">
+                    <h1 className="text-xl font-semibold text-blue-dark">
                         Serviços
                     </h1>  
                     <Button onClick={() => setModal(true)} variant="btnMedium"> + Novo </Button>

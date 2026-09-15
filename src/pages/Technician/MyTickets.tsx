@@ -99,7 +99,7 @@ export function MyTickets() {
 
     return (
         <main className="w-full px-10 py-10">
-            <h1 className="mb-8 text-2xl font-semibold text-[#2E3DA3]">
+            <h1 className="mb-8 text-2xl font-semibold text-blue-dark">
                 Meus chamados
             </h1>
 

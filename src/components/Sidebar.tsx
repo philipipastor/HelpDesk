@@ -11,7 +11,7 @@ type Props = {
 
 export function Sidebar({ role }: Props) {
     return (
-        <aside className="flex min-h-screen w-64 flex-col justify-between bg-[#17181C] text-white">
+        <aside className="flex min-h-screen w-64 flex-col justify-between bg-gray-100 text-gray-600">
             
             <div>
                 <div className="flex items-center gap-3 px-5 py-6">
@@ -26,7 +26,7 @@ export function Sidebar({ role }: Props) {
                             HelpDesk
                         </h1>
 
-                        <p className="text-[10px] font-semibold uppercase text-[#8090FF]">
+                        <p className="text-[10px] font-semibold uppercase text-blue-light">
                             {role}
                         </p>
                     </div>
@@ -43,8 +43,8 @@ export function Sidebar({ role }: Props) {
                                     text-sm transition-colors
                                     ${
                                         isActive
-                                            ? "bg-[#2E3DA3] text-white"
-                                            : "text-gray-400 hover:bg-white/5 hover:text-white"
+                                            ? "bg-blue-dark text-gray-600"
+                                            : "text-gray-400 hover:bg-gray-200 hover:text-gray-600"
                                     }`
                                 }
                             >
@@ -63,12 +63,12 @@ export function Sidebar({ role }: Props) {
                 )}
             </div>
 
-            <div className="border-t border-white/5 px-4 py-5">
+            <div className="border-t border-gray-200 px-4 py-5">
                 <div className="flex items-center gap-3">
                     <Avatar name="Usuário ADM"/>
 
                     <div className="min-w-0">
-                        <p className="text-xs text-white">
+                        <p className="text-xs text-gray-600">
                             Usuário Adm
                         </p>
 

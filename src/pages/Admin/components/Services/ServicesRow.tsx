@@ -14,7 +14,7 @@ export function ServicesRow({ service }: Props){
     const [status, setStatus] = useState<boolean>(service.status);
 
     return(
-        <tr className="border-b text-gray-500 last:border-b-0">
+        <tr className="border-b border-gray-500 last:border-b-0">
             <td className=" px-4 py-3 text-sm font-medium text-gray-100">
                 {service.title}
             </td>
@@ -26,8 +26,8 @@ export function ServicesRow({ service }: Props){
             <td>
                 <span className={`rounded-full px-3 py-1 text-sm font-medium ${
                         status
-                            ? "bg-green-100 text-green-600"
-                            : "bg-red-100 text-red-500"
+                            ? "bg-feedback-done/20 text-feedback-done"
+                            : "bg-feedback-danger/20 text-feedback-danger"
                     }`}
                 >
                     {status ? "Ativo" : "Inativo"}
@@ -35,7 +35,7 @@ export function ServicesRow({ service }: Props){
             </td>
 
             <td>
-                <Button className="flex items-center gap-1 text-xs font-bold text-gray-300 cursor-pointer hover:text-inherit" onClick={() => setStatus(!status)}>
+                <Button className="flex items-center gap-1 text-xs font-bold text-gray-300 cursor-pointer hover:text-gray-100" onClick={() => setStatus(!status)}>
                     <img src={status ? iconBan : iconActivate} alt="ícone de ativar/desativar"/>
                     {status ? "Desativar" : "Ativar"}
                 </Button>

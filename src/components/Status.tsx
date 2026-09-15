@@ -10,19 +10,19 @@ type Props = {
 const statusStyles = {
     open: {
         label: "Aberto",
-        className: "bg-red-100 text-red-500",
+        className: "bg-feedback-open/20 text-feedback-open",
         icon: iconHelp
     },
 
     in_progress: {
         label: "Em atendimento",
-        className: "bg-blue-100 text-blue-600",
+        className: "bg-feedback-progress/20 text-feedback-progress",
         icon: iconProgress
     },
 
     closed: {
         label: "Encerrado",
-        className: "bg-green-100 text-green-600",
+        className: "bg-feedback-done/20 text-feedback-done",
         icon: iconCheck
     },
 }

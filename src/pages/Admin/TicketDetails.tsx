@@ -108,7 +108,7 @@ export function TicketDetails() {
                 </button>
 
                 <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold text-[#2E3DA3]">
+                    <h1 className="text-2xl font-semibold text-blue-dark">
                         Chamado detalhado
                     </h1>
 
@@ -127,7 +127,7 @@ export function TicketDetails() {
 
                 <div className="grid grid-cols-[1fr_320px] gap-6">
 
-                    <section className="rounded-xl border border-gray-300 p-7">
+                    <section className="rounded-xl border border-gray-500 p-7">
 
                         <div className="mb-6 flex items-start justify-between">
                             <div>
@@ -135,7 +135,7 @@ export function TicketDetails() {
                                     {ticket.id}
                                 </span>
 
-                                <h2 className="mt-2 text-base font-semibold text-gray-900">
+                                <h2 className="mt-2 text-base font-semibold text-gray-200">
                                     {ticket.title}
                                 </h2>
                             </div>
@@ -204,7 +204,7 @@ export function TicketDetails() {
 
                     </section>
 
-                    <aside className="rounded-xl border border-gray-300 p-7">
+                    <aside className="rounded-xl border border-gray-500 p-7">
 
                         <div>
                             <span className="text-xs text-gray-400">
@@ -219,7 +219,7 @@ export function TicketDetails() {
                                     />
 
                                     <div>
-                                        <p className="text-sm font-medium text-gray-800">
+                                        <p className="text-sm font-medium text-gray-200">
                                             {ticket.technician.name}
                                         </p>
 
@@ -274,13 +274,13 @@ export function TicketDetails() {
                             </div>
                         </div>
 
-                        <div className="mt-6 border-t border-gray-200 pt-5">
+                        <div className="mt-6 border-t border-gray-500 pt-5">
                             <div className="flex items-center justify-between">
-                                <span className="text-sm font-semibold text-gray-800">
+                                <span className="text-sm font-semibold text-gray-200">
                                     Total
                                 </span>
 
-                                <strong className="text-base text-gray-900">
+                                <strong className="text-base text-gray-200">
                                     {formatCurrency(total)}
                                 </strong>
                             </div>

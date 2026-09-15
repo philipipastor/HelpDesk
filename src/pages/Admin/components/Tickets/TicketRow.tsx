@@ -16,7 +16,7 @@ export function TicketRow({ ticket }: Props) {
     const navigate = useNavigate()
 
     return (
-        <tr className="border-b text-gray-500 last:border-b-0">
+        <tr className="border-b border-gray-500 last:border-b-0">
 
             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-200">
                 {ticket.updatedAt}

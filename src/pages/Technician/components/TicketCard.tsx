@@ -14,7 +14,7 @@ type TicketCardProps = {
 
 export function TicketCard({ ticket }: TicketCardProps) {
     return (
-        <article className="w-full max-w-sm rounded-xl border border-gray-500 bg-white p-4">
+        <article className="w-full max-w-sm rounded-xl border border-gray-500 bg-gray-600 p-4">
 
             <div className="flex items-start justify-between gap-4">
 
@@ -23,7 +23,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
                         {ticket.id}
                     </span>
 
-                    <h2 className="mt-1 text-sm font-semibold text-gray-900">
+                    <h2 className="mt-1 text-sm font-semibold text-gray-200">
                         {ticket.title}
                     </h2>
 
@@ -44,7 +44,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
 
                     {ticket.status === "open" && (
                         <Button
-                            className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-900 px-2 text-xs text-white"
+                            className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-200 hover:bg-gray-100 px-2 text-xs text-gray-600"
                         >
                             <img
                                 src={iconStart}
@@ -58,7 +58,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
 
                     {ticket.status === "in_progress" && (
                         <Button
-                            className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-900 px-2 text-xs text-white"
+                            className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-200 hover:bg-gray-100 px-2 text-xs text-gray-600"
                         >
                             <img
                                 src={iconClose}
@@ -78,7 +78,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
                     {ticket.updatedAt}
                 </span>
 
-                <span className="text-xs font-medium text-gray-900">
+                <span className="text-xs font-medium text-gray-200">
                     R$ {ticket.service.amount}
                 </span>
             </div>
@@ -90,7 +90,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
                         variant="secondary"
                     />
 
-                    <span className="text-xs font-medium text-gray-700">
+                    <span className="text-xs font-medium text-gray-200">
                         {ticket.client.name}
                     </span>
                 </div>

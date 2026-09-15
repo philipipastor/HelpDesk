@@ -7,7 +7,7 @@ export function AuthLayout() {
       <div className="grid min-h-screen md:grid-cols-2">
 
         {/* Tela azul */}
-        <section className="relative hidden overflow-hidden bg-[#2E3DA3] md:block">
+        <section className="relative hidden overflow-hidden bg-blue-dark md:block">
 
           {/* Curva mais escura */}
           <div
@@ -19,7 +19,7 @@ export function AuthLayout() {
               w-[120%]
               rounded-full
               border-70
-              border-[#2E3DA3]
+              border-blue-dark
             "
           />
 
@@ -33,7 +33,7 @@ export function AuthLayout() {
               w-[110%]
               rounded-full
               border-60
-              border-[#5165E1]
+              border-blue-base
             "
           />
 
@@ -47,7 +47,7 @@ export function AuthLayout() {
               w-full
               rounded-full
               border-55
-              border-[#8996EB]
+              border-blue-light
             "
           />
 
@@ -71,7 +71,7 @@ export function AuthLayout() {
           <div className="w-full max-w-100">
             <div className="flex items-center justify-center mb-8">
                 <img src={logo} alt="ícone de logo" className="w-15 h-15"/>
-                <span className="pl-2 text-2xl text-[#2E3DA3] font-semibold">HelpDesk</span>
+                <span className="pl-2 text-2xl text-blue-dark font-semibold">HelpDesk</span>
             </div>
 
             <Outlet />
