@@ -1,4 +1,5 @@
 import { formatCurrency } from "../../../utils/FormatCurrency"
+import { formatDate } from "../../../utils/FormatDate"
 import { useNavigate } from "react-router"
 import type { TicketDetails } from "../../../types/TicketDetails"
 
@@ -18,7 +19,7 @@ export function TicketRow({ ticket }: Props) {
         <tr className="border-b border-gray-500 last:border-b-0">
 
             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-200">
-                {ticket.updatedAt}
+                {formatDate(ticket.updatedAt)}
             </td>
 
             <td className="px-4 py-3 text-xs font-medium text-gray-100">
@@ -34,7 +35,7 @@ export function TicketRow({ ticket }: Props) {
             </td>
 
             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-200">
-                {formatCurrency(Number(ticket.service.amount) + ticket.additionalServices.reduce((total, service) => total + service.amount, 0))}
+                {formatCurrency(ticket.service.amount + ticket.additionalServices.reduce((total, service) => total + service.amount, 0))}
             </td>
 
             <td className="px-4 py-3">

@@ -5,6 +5,7 @@ import { Modal } from "../Modal"
 import { Input } from "../Input"
 
 import { formatCurrency } from "../../utils/FormatCurrency"
+import { formatDate } from "../../utils/FormatDate"
 
 import { useNavigate } from "react-router"
 import { useState } from "react"
@@ -16,10 +17,11 @@ import iconPlus from "../../assets/plus.png"
 import iconRemove from "../../assets/iconRemove.png"
 
 import type { TicketDetails } from "../../types/TicketDetails"
+import type { UserRole } from "../../types/UserRole"
 
 type Props = {
     ticket: TicketDetails
-    role: "admin" | "client" | "technician"
+    role: UserRole
 }
 
 export function TicketDetailsCard({ ticket, role }: Props) {
@@ -32,7 +34,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
         0
     )
 
-    const total = Number(ticket.service.amount) + additionalTotal
+    const total = ticket.service.amount + additionalTotal
 
     const navigate = useNavigate()
 
@@ -145,7 +147,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                                 </span>
 
                                 <p className="mt-1 text-sm text-gray-200">
-                                    {ticket.createdAt || "Não informado"}
+                                    {formatDate(ticket.createdAt)}
                                 </p>
                             </div>
 
@@ -155,7 +157,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                                 </span>
 
                                 <p className="mt-1 text-sm text-gray-200">
-                                    {ticket.updatedAt}
+                                    {formatDate(ticket.updatedAt)}
                                 </p>
                             </div>
                         </div>
@@ -221,7 +223,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                                 </span>
 
                                 <span className="text-sm text-gray-200">
-                                    {formatCurrency(Number(ticket.service.amount))}
+                                    {formatCurrency(ticket.service.amount)}
                                 </span>
                             </div>
                         </div>

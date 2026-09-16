@@ -1,4 +1,5 @@
 import { formatCurrency } from "../../../utils/FormatCurrency"
+import { formatDate } from "../../../utils/FormatDate"
 import { Button } from "../../../components/Button"
 import { Avatar } from "../../../components/Avatar"
 import { Status } from "../../../components/Status"
@@ -75,11 +76,11 @@ export function TicketCard({ ticket }: TicketCardProps) {
 
             <div className="mt-5 flex items-center justify-between border-b border-gray-500 pb-4">
                 <span className="text-xs text-gray-200">
-                    {ticket.updatedAt}
+                    {formatDate(ticket.updatedAt)}
                 </span>
 
                 <span className="text-xs font-medium text-gray-200">
-                    {formatCurrency(Number(ticket.service.amount) + ticket.additionalServices.reduce((total, service) => total + service.amount, 0))}
+                    {formatCurrency(ticket.service.amount + ticket.additionalServices.reduce((total, service) => total + service.amount, 0))}
                 </span>
             </div>
 
