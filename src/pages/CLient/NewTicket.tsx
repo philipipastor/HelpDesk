@@ -1,7 +1,14 @@
 import { Button } from "../../components/Button"
 import { Input } from "../../components/Input"
 
+import { useState } from "react"
+
+import { Services } from "../../data/Services"
+
 export function NewTicket() {
+    const [serviceId, setServiceId] = useState("")
+    const selectedService = Services.find(service => service.id === serviceId)
+
     return (
         <main className="w-full px-8 py-10">
 
@@ -41,28 +48,17 @@ export function NewTicket() {
                                 </label>
 
                                 <select
-                                    defaultValue=""
+                                    value={serviceId}
+                                    onChange={event => setServiceId(event.target.value)}
                                     className="w-full border-b border-gray-500 bg-transparent py-2 text-sm text-gray-100 outline-none focus:border-blue-base"
                                 >
                                     <option value="" disabled>
                                         Selecione a categoria de atendimento
                                     </option>
 
-                                    <option value="rede">
-                                        Instalação de Rede
-                                    </option>
-
-                                    <option value="dados">
-                                        Recuperação de Dados
-                                    </option>
-
-                                    <option value="hardware">
-                                        Manutenção de Hardware
-                                    </option>
-
-                                    <option value="software">
-                                        Suporte de Software
-                                    </option>
+                                     {Services.map(service => (
+                                        <option key={service.id} value={service.id}>{service.title}</option>
+                                     ))}   
                                 </select>
                             </div>
 
@@ -87,7 +83,7 @@ export function NewTicket() {
                             </span>
 
                             <p className="mt-1 text-sm font-medium text-gray-200">
-                                Erro de rede
+                                {selectedService ? selectedService.title : "Selecione um serviço"}
                             </p>
 
                         </div>
@@ -99,7 +95,7 @@ export function NewTicket() {
                             </span>
 
                             <p className="mt-1 text-xl font-semibold text-gray-200">
-                                R$ 200,00
+                                {selectedService ? `R$ ${selectedService.amount}` : "—"}
                             </p>
 
                         </div>
