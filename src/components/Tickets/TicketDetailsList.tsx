@@ -1,9 +1,10 @@
 import { Link, useParams } from "react-router"
 import { tickets } from "../../data/Tickets"
 import { TicketDetailsCard } from "./TicketDetailsCard"
+import type { UserRole } from "../../types/UserRole"
 
 type Props = {
-    role: "admin" | "client" | "technician"
+    role: UserRole
 }
 
 export function TicketDetailsList({ role }: Props) {

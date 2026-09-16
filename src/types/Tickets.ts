@@ -1,6 +1,7 @@
 import type { Service } from "./Services"
 import type { Technician } from "./technician"
 import type { Client } from "./Client"
+import type { StatusType } from "./Status"
 
 export type Tickets = {
     createdAt?: string
@@ -9,6 +10,6 @@ export type Tickets = {
     title: string
     service: Pick<Service, "title" | "amount">
     client: Pick<Client, "name">
-    technician: Pick<Technician, "name">
-    status: "open" | "in_progress" | "closed"
+    technician: (Pick<Technician, "name"> & Partial<Pick<Technician, "email">>) | null
+    status: StatusType
 }

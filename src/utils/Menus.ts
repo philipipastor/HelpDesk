@@ -3,6 +3,7 @@ import users from "../assets/users.png"
 import business from "../assets/business.png"
 import wrench from "../assets/wrench.png"
 import plus from "../assets/plus.png"
+import type { UserRole } from "../types/UserRole"
 
 export const Menus = {
     admin: [
@@ -20,4 +21,4 @@ export const Menus = {
         { label: "Meus chamados", path: "/", icon: listTickets },
         { label: "Criar chamado", path: "/tickets/new", icon: plus }
     ]
-}
+} satisfies Record<UserRole, { label: string; path: string; icon: string }[]>

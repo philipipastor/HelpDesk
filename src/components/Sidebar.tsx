@@ -1,4 +1,5 @@
 import { NavLink } from "react-router"
+import type { UserRole } from "../types/UserRole"
 
 import { Menus } from "../utils/Menus"
 import { Avatar } from "./Avatar"
@@ -6,7 +7,7 @@ import { Avatar } from "./Avatar"
 import logo from "../assets/Logo_IconDark.png"
 
 type Props = {
-    role?: "admin" | "client" | "technician"
+    role?: UserRole
 }
 
 export function Sidebar({ role }: Props) {

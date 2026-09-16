@@ -3,9 +3,10 @@ import { AuthRoutes } from "./authRoutes";
 import { AdminRoutes } from "./adminRoutes";
 import { ClientRoutes } from "./clientRoutes"
 import { TechnicianRoutes } from "./technicianRoutes";
+import type { UserRole } from "../types/UserRole"
 
 export function Routes(){
-    const user = {
+    const user: { role: UserRole } = {
         role: "technician"
     }
 
