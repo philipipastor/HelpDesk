@@ -1,14 +1,7 @@
 import type { Tickets } from "./Tickets"
+import type { Service } from "./Services"
 
-export type TicketDetails = Omit<Tickets, "technician"> & {
+export type TicketDetails = Tickets & {
     description?: string
-    technician?: {
-        name: string
-        email?: string
-    }
-    additionalServices: {
-        id: string
-        title: string
-        amount: number
-    }[]
+    additionalServices: Pick<Service, "id" | "title" | "amount">[]
 }
