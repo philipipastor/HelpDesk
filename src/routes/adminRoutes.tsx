@@ -17,7 +17,7 @@ export function AdminRoutes(){
             <Route path="/clientes" element={<Client/>} />
             <Route path="/serviços" element={<Services/>} />
             <Route path="/" element={<Tickets/>} />
-            <Route path="/ticket/:id/status" element={<TicketDetails/>} />
+            <Route path="/ticket/:id" element={<TicketDetails/>} />
             </Route>
         <Route path="*" element={<NotFound/>}/>
     </Routes>

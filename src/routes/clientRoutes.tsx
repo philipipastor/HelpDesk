@@ -1,3 +1,4 @@
+import { TicketDetails } from "../pages/CLient/TicketDetails"
 import { Routes, Route } from "react-router"
 
 import { AppLayout } from "../components/layout/AppLayout"
@@ -11,6 +12,7 @@ export function ClientRoutes(){
     <Routes>
         <Route element={<AppLayout/>}>
             <Route path="/" element={<Tickets/>}/>
+            <Route path="/ticket/:id" element={<TicketDetails/>}/>
             <Route path="/tickets/new" element={<NewTicket/>}/>
         </Route>
 
