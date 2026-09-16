@@ -4,22 +4,22 @@ export const Services: Service[] = [
     {
         id: "0001",
         title: "Instalação de Rede",
-        amount: "180,00",
+        amount: 180,
         status: true
     },    {
         id: "0002",
         title: "Recuperação de Dados",
-        amount: "200,00",
+        amount: 200,
         status: true
     },    {
         id: "0003",
         title: "Recuperação de Hardware",
-        amount: "150,00",
+        amount: 150,
         status: true
     },    {
         id: "0004",
         title: "Suporte de Software",
-        amount: "250,00",
+        amount: 250,
         status: true
     }
 ]

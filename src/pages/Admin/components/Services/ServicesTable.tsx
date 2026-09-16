@@ -1,17 +1,18 @@
 import { Table } from "../../../../components/Table"
 import { ServicesRow} from "./ServicesRow"
+import type { Service } from "../../../../types/Services"
 
-const services = [
+const services: Service[] = [
     {
         id: "1",
         title: "instalação de rede",
-        amount: "180",
+        amount: 180,
         status: true,
     },
         {
         id: "2",
         title: "Recuperação de dados",
-        amount: "1200",
+        amount: 1200,
         status: false
     }
 ]

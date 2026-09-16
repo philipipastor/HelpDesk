@@ -4,6 +4,7 @@ import { Input } from "../../components/Input"
 import { useState } from "react"
 
 import { Services } from "../../data/Services"
+import { formatCurrency } from "../../utils/FormatCurrency"
 
 export function NewTicket() {
     const [serviceId, setServiceId] = useState("")
@@ -95,7 +96,7 @@ export function NewTicket() {
                             </span>
 
                             <p className="mt-1 text-xl font-semibold text-gray-200">
-                                {selectedService ? `R$ ${selectedService.amount}` : "—"}
+                                {selectedService ? formatCurrency(selectedService.amount) : "—"}
                             </p>
 
                         </div>

@@ -28,7 +28,7 @@ export function ServicesRow({ service }: Props) {
                 </td>
 
                 <td className="px-4 py-3 text-sm text-gray-200">
-                    {formatCurrency(Number(service.amount))}
+                    {formatCurrency(service.amount)}
                 </td>
 
                 <td>

@@ -8,7 +8,7 @@ export const tickets: TicketDetails[] = [
         title: "Problema com o computador",
         service: {
             title: "Reparo de computador",
-            amount: "100"
+            amount: 100
         },
         client: {
             name: "John Doe"
@@ -25,7 +25,7 @@ export const tickets: TicketDetails[] = [
         title: "Problema com o computador",
         service: {
             title: "Reparo de computador",
-            amount: "100"
+            amount: 100
         },
         client: {
             name: "John Doe"
@@ -42,7 +42,7 @@ export const tickets: TicketDetails[] = [
         title: "Problema com o computador",
         service: {
             title: "Reparo de computador",
-            amount: "100"
+            amount: 100
         },
         client: {
             name: "John Doe"
@@ -63,7 +63,7 @@ export const tickets: TicketDetails[] = [
 
     service: {
         title: "Recuperação de Dados",
-        amount: "200",
+        amount: 200,
     },
 
     client: {
@@ -75,8 +75,8 @@ export const tickets: TicketDetails[] = [
         email: "carlos.silva@test.com",
     },
 
-    createdAt: "12/04/25 09:12",
-    updatedAt: "12/04/25 15:20",
+    createdAt: "2025-04-12T09:12:00",
+    updatedAt: "2025-04-12T15:20:00",
 
     additionalServices: [
         {
