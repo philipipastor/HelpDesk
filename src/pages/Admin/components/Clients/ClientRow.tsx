@@ -64,27 +64,31 @@ export function ClientRow({ client }: Props) {
 
             {modalDel &&
                 <Modal isOpen={modalDel} title="Excluir cliente" onClose={() => setModalDel(false)}>
-                    <p>
+                    <p className="text-sm text-gray-200">
                         Deseja realmente exluir <strong>Philipi Pastor?</strong>
                     </p>
-                    <p className="mt-4">
+                    <p className="mt-4 text-sm text-gray-200">
                         Ao excluir, todos os chamados deste cliente serão removidos e esta ação não poderá ser desfeita.
                     </p>
-                    <div className="flex items-center justify-end gap-2">
-                        <Button variant="color" onClick={() => setModalDel(false)}>Cancelar</Button>
+                    <div className="-mx-6 mt-4 flex items-center gap-2 border-t border-gray-500 px-6 pt-6">
+                        <Button className="flex h-10 w-full items-center justify-center rounded-[5px] bg-gray-500 text-sm font-bold text-gray-100 hover:bg-gray-400 cursor-pointer" onClick={() => setModalDel(false)}>Cancelar</Button>
 
-                        <Button>Sim, excluir</Button>
+                        <Button className="flex h-10 w-full items-center justify-center rounded-[5px] bg-gray-200 text-sm font-bold text-gray-600 hover:bg-gray-100 cursor-pointer">Sim, excluir</Button>
                     </div>
                 </Modal>
             }
 
             {modalEdit &&
-                <Modal isOpen={modalEdit} title="CLiente" onClose={() => setModalEdit(false)}>
-                    <form>
+                <Modal isOpen={modalEdit} title="Cliente" onClose={() => setModalEdit(false)}>
+                    <form className="space-y-4 [&_fieldset]:mt-0 [&_input]:mb-0 [&_input]:h-8">
                         <Avatar name="teste"/>
-                        <Input legenda="Nome" />
-                        <Input legenda="E-mail" />
-                        <Button>Salvar</Button>
+                        <Input legenda="Nome" defaultValue={client.name}/>
+                        <Input legenda="E-mail" defaultValue={client.email}/>
+                        <div className="-mx-6 border-t border-gray-500 px-6 pt-6">
+                            <Button className="flex h-10 w-full items-center justify-center rounded-[5px] bg-gray-200 text-sm font-bold text-gray-600 hover:bg-gray-100 cursor-pointer">
+                                Salvar
+                            </Button>
+                        </div>
                     </form>
                 </Modal>
             }
