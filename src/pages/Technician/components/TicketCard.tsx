@@ -1,18 +1,23 @@
+import { formatCurrency } from "../../../utils/FormatCurrency"
 import { Button } from "../../../components/Button"
 import { Avatar } from "../../../components/Avatar"
 import { Status } from "../../../components/Status"
 
-import type { Ticket } from "../MyTickets"
+import type { TicketDetails } from "../../../types/TicketDetails"
+
+import { useNavigate } from "react-router"
 
 import iconEdit from "../../../assets/iconEdit.png"
 import iconStart from "../../../assets/circle-check-big-2.png"
 import iconClose from "../../../assets/clock.png"
 
 type TicketCardProps = {
-    ticket: Ticket
+    ticket: TicketDetails
 }
 
 export function TicketCard({ ticket }: TicketCardProps) {
+    const navigate = useNavigate()
+
     return (
         <article className="w-full max-w-sm rounded-xl border border-gray-500 bg-gray-600 p-4">
 
@@ -33,9 +38,8 @@ export function TicketCard({ ticket }: TicketCardProps) {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <Button
-                        className="w-7.5 h-7.5 bg-gray-500 hover:bg-gray-400 rounded-md flex items-center justify-center"
-                    >
+                    <Button className="w-7.5 h-7.5 bg-gray-500 hover:bg-gray-400 rounded-md flex items-center justify-center cursor-pointer"
+                            onClick={() => navigate(`/ticket/${ticket.id}`)}>
                         <img
                             src={iconEdit}
                             alt="ícone de editar"
@@ -43,9 +47,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
                     </Button>
 
                     {ticket.status === "open" && (
-                        <Button
-                            className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-200 hover:bg-gray-100 px-2 text-xs text-gray-600"
-                        >
+                        <Button className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-200 hover:bg-gray-100 px-2 text-xs text-gray-600 cursor-pointer">
                             <img
                                 src={iconStart}
                                 alt="ícone de iniciar"
@@ -57,9 +59,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
                     )}
 
                     {ticket.status === "in_progress" && (
-                        <Button
-                            className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-200 hover:bg-gray-100 px-2 text-xs text-gray-600"
-                        >
+                        <Button className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-200 hover:bg-gray-100 px-2 text-xs text-gray-600 cursor-pointer">
                             <img
                                 src={iconClose}
                                 alt="ícone de fechar"
@@ -79,7 +79,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
                 </span>
 
                 <span className="text-xs font-medium text-gray-200">
-                    R$ {ticket.service.amount}
+                    {formatCurrency(Number(ticket.service.amount) + ticket.additionalServices.reduce((total, service) => total + service.amount, 0))}
                 </span>
             </div>
 
