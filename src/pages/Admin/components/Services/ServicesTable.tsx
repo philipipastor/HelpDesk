@@ -10,7 +10,7 @@ const services = [
     },
         {
         id: "2",
-        title: "Recuperação de daos",
+        title: "Recuperação de dados",
         amount: "1200",
         status: false
     }
