@@ -1,64 +1,7 @@
+import { tickets } from "../../../data/Tickets"
 import { Table } from "../../../components/Table"
 
-import type { StatusType } from "../../../types/Status"
-
 import { TicketRow } from "./TicketRow"
-
-export type Ticket = {
-    id: string
-    title: string
-    service: {
-        title: string
-        amount: string
-    }
-    updatedAt: string
-    status: StatusType
-    technician: {
-        name: string
-    }
-}
-
-const tickets: Ticket[] = [
-    {   
-        id: "1",
-        title: "Problema com o computador",
-        service: {
-            title: "Reparo de computador",
-            amount: "100"
-        },
-        updatedAt: "2023-06-01",
-        status: "open",
-        technician: {
-            name: "Jane Smith"
-        }
-    },
-    {   
-        updatedAt: "2023-06-01",
-        id: "2",
-        title: "Problema com o computador",
-        service: {
-            title: "Reparo de computador",
-            amount: "100"
-        },
-        technician: {
-            name: "Jane Smith"
-        },
-        status: "in_progress"
-    },
-    {   
-        updatedAt: "2023-06-01",
-        id: "3",
-        title: "Problema com o computador",
-        service: {
-            title: "Reparo de computador",
-            amount: "100"
-        },
-        technician: {
-            name: "Jane Smith"
-        },
-        status: "closed"
-    }
-]
 
 export function TicketTable() {
     return (
