@@ -1,13 +1,13 @@
 import { Status } from "../../../components/Status"
 
 import { TicketCard } from "./TicketCard"
-import type { Ticket } from "../MyTickets"
+import type { TicketDetails } from "../../../types/TicketDetails"
 
 import type { StatusType } from "../../../types/Status"
 
 type TicketSectionProps = {
     status: StatusType
-    tickets: Ticket[]
+    tickets: TicketDetails[]
 }
 
 export function TicketSection({ status,tickets }: TicketSectionProps) {
@@ -20,7 +20,7 @@ export function TicketSection({ status,tickets }: TicketSectionProps) {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {tickets.map((ticket) => (
                     <TicketCard
-                        key={`${ticket.id}-${ticket.updatedAt}-${ticket.status}`}
+                        key={ticket.id}
                         ticket={ticket}
                     />
                 ))}
