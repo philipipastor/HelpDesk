@@ -1,4 +1,5 @@
 import iconEdit from "../../../../assets/iconEdit.png"
+import { useNavigate } from "react-router"
 
 import { Button } from "../../../../components/Button"
 import { Avatar } from "../../../../components/Avatar"
@@ -10,6 +11,7 @@ type Props = {
 }
 
 export function TechnicianRow({ technician }: Props) {
+    const navigate = useNavigate()
     return (
         <tr className="border-b border-gray-500 last:border-b-0">
             <td className="px-4 py-3">
@@ -29,7 +31,7 @@ export function TechnicianRow({ technician }: Props) {
             <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
                     {technician.availability.map((time) => (
-                        <span key={time}>
+                        <span className="flex items-center h-7 rounded-full border border-gray-400 px-3 text-xs text-gray-400 font-semibold " key={time}>
                             {time}
                         </span>
                     ))}
@@ -37,7 +39,7 @@ export function TechnicianRow({ technician }: Props) {
             </td>
 
             <td className="px-4 py-3 flex items-center justify-end gap-2">
-                <Button variant="icon">
+                <Button variant="icon" onClick={() => navigate(`/tecnicos/${technician.id}/editar`)} aria-label={`Editar ${technician.name}`}>
                     <img src={iconEdit} alt="ícone de editar"/>
                 </Button>
             </td>
