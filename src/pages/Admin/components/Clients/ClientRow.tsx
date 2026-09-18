@@ -64,9 +64,11 @@ export function ClientRow({ client }: Props) {
 
             {modalDel &&
                 <Modal isOpen={modalDel} title="Excluir cliente" onClose={() => setModalDel(false)}>
+                    
                     <p className="text-sm text-gray-200">
-                        Deseja realmente exluir <strong>Philipi Pastor?</strong>
+                        Deseja realmente exluir <strong>{client.name}</strong>
                     </p>
+                       
                     <p className="mt-4 text-sm text-gray-200">
                         Ao excluir, todos os chamados deste cliente serão removidos e esta ação não poderá ser desfeita.
                     </p>
@@ -81,7 +83,7 @@ export function ClientRow({ client }: Props) {
             {modalEdit &&
                 <Modal isOpen={modalEdit} title="Cliente" onClose={() => setModalEdit(false)}>
                     <form className="space-y-4 [&_fieldset]:mt-0 [&_input]:mb-0 [&_input]:h-8">
-                        <Avatar name="teste"/>
+                        <Avatar name={client.name}/>
                         <Input legenda="Nome" defaultValue={client.name}/>
                         <Input legenda="E-mail" defaultValue={client.email}/>
                         <div className="-mx-6 border-t border-gray-500 px-6 pt-6">
