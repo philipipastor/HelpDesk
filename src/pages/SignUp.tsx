@@ -1,11 +1,15 @@
 import { Input } from "../components/Input"
 import { Button } from "../components/Button"
+import { api } from "../services/api"
 
-import { useState, type FormEvent } from "react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 import { useNavigate } from "react-router"
 
-import { z, ZodError } from "zod"
+import { z } from "zod"
+import { AxiosError } from "axios"
 
 const schema = z.object({
     name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
@@ -13,35 +17,34 @@ const schema = z.object({
     password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres")
 })
 
+type SignUpData = z.infer<typeof schema>
+
 export function SignUp(){
 
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
     const [error, setError] = useState("")
+
+    const {register, handleSubmit, formState: { errors, isSubmitting }} = useForm<SignUpData>({
+        resolver: zodResolver(schema)
+    })
 
     const navigate = useNavigate()
 
-    function handleSubmit(e: FormEvent){
-        e.preventDefault()
-
-        const data = {
-            name,
-            email,
-            password
-        }
+    async function onSubmit(data: SignUpData){
+        setError("")
 
         try {
-            const user = schema.parse(data)
-            setError("")
-            console.log(user)
+            await api.post("/users", data)
+            if(confirm("Cadastro concluído com sucesso, deseja seguir para a página de login?")){
+                navigate("/")
+            }
 
         } catch (error) {
-            console.log(error)
-
-            if(error instanceof ZodError){
-                setError(error.issues[0].message)
+            if(error instanceof AxiosError){
+                setError(error.response?.data?.message || "Não foi possível cadastrar!")
+                return
             }
+
+            setError("Não foi possível cadastrar!")
         }
     }
 
@@ -59,16 +62,51 @@ export function SignUp(){
                 </div>
 
 
-                <form className="mt-4 space-y-2.5" onSubmit={handleSubmit}>
-                    <Input legenda="Nome" placeholder="Digite o nome completo" onChange={(e) => setName(e.target.value)}/>
-                    <Input legenda="E-mail" placeholder="exeplo@mail.com" onChange={(e) => setEmail(e.target.value)}/>
-                    <Input legenda="Senha" placeholder="Digite sua senha" onChange={(e) => setPassword(e.target.value)}/>
-                
+                <form className="mt-4 space-y-2.5" onSubmit={handleSubmit(onSubmit)} noValidate>
+                    <Input
+                        legenda="Nome"
+                        placeholder="Digite o nome completo"
+                        autoComplete="name"
+                        {...register("name")}
+                    />
+                    {errors.name && (
+                        <p id="name-error" role="alert" className="text-feedback-danger text-sm">
+                            {errors.name.message}
+                        </p>
+                    )}
 
-                    <p className="text-red-600 ml-2 text-sm">{error}</p>
+                    <Input
+                        legenda="E-mail"
+                        type="email"
+                        placeholder="exemplo@mail.com"
+                        autoComplete="email"
+                        {...register("email")}
+                    />
+                    {errors.email && (
+                        <p id="email-error" role="alert" className="text-feedback-danger text-sm">
+                            {errors.email.message}
+                        </p>
+                    )}
 
-                    <Button type="submit">
-                        Cadastrar
+                    <Input
+                        type="password"
+                        legenda="Senha"
+                        placeholder="Digite sua senha"
+                        autoComplete="new-password"
+                        {...register("password")}
+                    />
+                    {errors.password && (
+                        <p id="password-error" role="alert" className="text-feedback-danger text-sm">
+                            {errors.password.message}
+                        </p>
+                    )}
+
+                    {error && (
+                        <p role="alert" className="text-feedback-danger ml-2 text-sm flex justify-center items-center">{error}</p>
+                    )}
+
+                    <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? "Cadastrando..." : "Cadastrar"}
                     </Button>
                 </form>   
             </div>
@@ -76,7 +114,7 @@ export function SignUp(){
             <div className="rounded-md border border-gray-500 bg-gray-600 px-3 py-3 mt-2 sm:px-4 sm:py-4">
                 <h3 className="text-base font-semibold">Já tem uma conta ?</h3>
                 <p className="text-sm">Entre agora mesmo</p>
-                <Button onClick={() => navigate("/")}>
+                <Button variant="color" onClick={() => navigate("/")}>
                     Acessar conta
                 </Button>
             </div>
