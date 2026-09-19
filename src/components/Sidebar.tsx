@@ -1,21 +1,29 @@
+import { ChangePasswordModal } from "./Sidebar/ChangePasswordModal"
+import { ProfileModal } from "./Sidebar/ProfileModal"
 import { NavLink } from "react-router"
 import { useEffect, useRef, useState } from "react"
 
-import { Menus } from "../utils/Menus"
 import { Avatar } from "./Avatar"
+
+import { Menus } from "../utils/Menus"
+
+import { Technicians } from "../data/Technician"
 
 import logo from "../assets/Logo_IconDark.png"
 import iconUser from "../assets/circle-user.png"
 import iconLogout from "../assets/log-out.png"
 import { useAuth } from "../hook/useAuth"
 
+
 export function Sidebar() {
     const { user } = useAuth()
     const auth = useAuth()
 
     const role = user?.user.role
-    
+
     const [menuOpen, setMenuOpen] = useState(false)
+    const [modal, setModal] = useState(false)
+    const [modalPassword, setModalPassword] = useState(false)
     const footerRef = useRef<HTMLDivElement>(null)
     const userButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -43,6 +51,8 @@ export function Sidebar() {
             document.removeEventListener("keydown", handleKeyDown)
         }
     }, [menuOpen])
+
+    const technician = Technicians.find(technician => user?.user.id === technician.id)
 
     return (
         <aside className="flex min-h-screen w-64 flex-col justify-between bg-gray-100 text-gray-600">
@@ -123,6 +133,7 @@ export function Sidebar() {
                         </p>
 
                         <button
+                            onClick={() => setModal(true)}
                             type="button"
                             className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-gray-400 cursor-pointer hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-light"
                         >
@@ -140,7 +151,26 @@ export function Sidebar() {
                         </button>
                     </div>
                 )}
+
             </div>
+            {modal && (
+                <ProfileModal
+                    modal={modal}
+                    setModal={setModal}
+                    setModalPassword={setModalPassword}
+                    user={user}
+                    role={role}
+                    technician={technician}
+                />
+            )}
+
+            {modalPassword && (
+                <ChangePasswordModal
+                    modalPassword={modalPassword}
+                    setModalPassword={setModalPassword}
+                    setModal={setModal}
+                />
+            )}
 
         </aside>
     )
