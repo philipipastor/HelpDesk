@@ -3,7 +3,7 @@ import { createPortal } from "react-dom"
 
 type Props = {
     isOpen: boolean,
-    title: string,
+    title: React.ReactNode,
     onClose: () => void,
     children: React.ReactNode
 }
