@@ -13,7 +13,7 @@ export function DeleteClientModal({ modalDel, setModalDel, client }: Props) {
         <Modal isOpen={modalDel} title="Excluir cliente" onClose={() => setModalDel(false)}>
             
             <p className="text-sm text-gray-200">
-                Deseja realmente exluir <strong>{client.name}</strong>
+                Deseja realmente excluir <strong>{client.name}</strong>?
             </p>
                
             <p className="mt-4 text-sm text-gray-200">
