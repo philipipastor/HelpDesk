@@ -25,8 +25,8 @@ export function CreateServiceModal({ modal, setModal, register, errors, isSubmit
                 <Input legenda="Título" placeholder="Nome do serviço" {...register("title")}/>
                 {errors.title && <p id="title-error" role="alert" className="text-xs text-feedback-danger">{errors.title.message}</p>}
         
-                <Input legenda="Valor" placeholder="R$ 0,00" {...register("amount")}/>
-                {errors.amount && <p id="title-error" role="alert" className="text-xs text-feedback-danger">{errors.amount.message}</p>}
+                <Input legenda="Valor" inputMode="decimal" placeholder="R$ 0,00" {...register("amount")}/>
+                {errors.amount && <p id="amount-error" role="alert" className="text-xs text-feedback-danger">{errors.amount.message}</p>}
         
                 <div className="-mx-6 border-t border-gray-500 px-6 pt-6">
                     <Button 
