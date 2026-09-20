@@ -1,6 +1,6 @@
 import { ChangePasswordModal } from "./Sidebar/ChangePasswordModal"
 import { ProfileModal } from "./Sidebar/ProfileModal"
-import { NavLink } from "react-router"
+import { NavLink, useNavigate } from "react-router"
 import { useEffect, useRef, useState } from "react"
 
 import { Avatar } from "./Avatar"
@@ -18,6 +18,7 @@ import { useAuth } from "../hook/useAuth"
 export function Sidebar() {
     const { user } = useAuth()
     const auth = useAuth()
+    const navigate = useNavigate()
 
     const role = user?.user.role
 
@@ -142,7 +143,10 @@ export function Sidebar() {
                         </button>
 
                         <button
-                            onClick={() => auth.signOut()}
+                            onClick={() => {
+                                auth.signOut()
+                                navigate("/", { replace: true })
+                            }}
                             type="button"
                             className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-feedback-danger cursor-pointer hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-light"
                         >
