@@ -15,7 +15,7 @@ export function MyTickets() {
     )
 
     return (
-        <main className="w-full px-10 py-10">
+        <div className="w-full px-10 py-10">
             <h1 className="mb-8 text-2xl font-semibold text-blue-dark">
                 Meus chamados
             </h1>
@@ -38,6 +38,6 @@ export function MyTickets() {
                 />
 
             </section>
-        </main>
+        </div>
     )
 }

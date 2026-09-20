@@ -52,7 +52,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
     }
 
     return (
-        <main className={role === "technician" ? "w-full px-6 py-7 md:px-12 md:py-13" : "w-full px-8 py-10"}>
+        <div className={role === "technician" ? "w-full px-6 py-7 md:px-12 md:py-13" : "w-full px-8 py-10"}>
             <div className={role === "technician" ? "mx-auto w-full max-w-200" : "mx-auto w-full max-w-5xl"}>
 
                 <button
@@ -316,6 +316,6 @@ export function TicketDetailsCard({ ticket, role }: Props) {
 
                 </div>
             </div>
-        </main>
+        </div>
     )
 }
