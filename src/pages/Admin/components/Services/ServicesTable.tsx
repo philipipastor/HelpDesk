@@ -35,7 +35,8 @@ export function ServicesTable(){
                             Status
                         </th>
 
-                        <th className="w-24"></th>
+                        <th scope="col"><span className="sr-only">Ativar ou desativar</span></th>
+                        <th scope="col" className="w-24"><span className="sr-only">Editar</span></th>
                     </tr>
                 </thead>
 
