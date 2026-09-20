@@ -63,7 +63,7 @@ export function NewTicket() {
     }
 
     return (
-        <main className="w-full px-8 py-10">
+        <div className="w-full px-8 py-10">
 
             <div className="mx-auto w-full max-w-5xl">
 
@@ -92,11 +92,18 @@ export function NewTicket() {
                             />
                             {errors.title && <p id="title-error" role="alert" className="text-xs text-feedback-danger">{errors.title.message}</p>}
 
-                            <Input
-                                legenda="Descrição"
-                                placeholder="Descreva o que está acontecendo"
-                                {...register("description")}
-                            />
+                            <div className="group">
+                                <label htmlFor="ticket-description" className="block text-sm font-medium uppercase text-gray-300 group-focus-within:text-blue-base">
+                                    Descrição
+                                </label>
+                                <textarea
+                                    id="ticket-description"
+                                    rows={4}
+                                    placeholder="Descreva o que está acontecendo"
+                                    className="mt-2 block w-full resize-y rounded-md border border-gray-500 bg-transparent p-3 text-sm text-gray-100 outline-none placeholder:text-gray-400 focus:border-blue-base"
+                                    {...register("description")}
+                                />
+                            </div>
                             {errors.description && <p id="description-error" role="alert" className="text-xs text-feedback-danger">{errors.description.message}</p>}
 
                             <div className="mt-10">
@@ -173,6 +180,6 @@ export function NewTicket() {
 
             </div>
 
-        </main>
+        </div>
     )
 }
