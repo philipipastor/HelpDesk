@@ -21,26 +21,26 @@ const schema = z.object({
 
 type SignInData = z.infer<typeof schema>
 
-export function SignIn(){
+export function SignIn() {
 
     const [error, setError] = useState("")
 
-    const {register, handleSubmit, formState: { errors, isSubmitting }} = useForm<SignInData>({
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignInData>({
         resolver: zodResolver(schema)
     })
 
     const navigate = useNavigate()
     const auth = useAuth()
 
-    async function onSubmit(data: SignInData){
+    async function onSubmit(data: SignInData) {
         setError("")
 
         try {
             const response = await api.post("/sessions", data)
             auth.signIn(response.data)
-            
+
         } catch (error) {
-            if(error instanceof AxiosError){
+            if (error instanceof AxiosError) {
                 setError(error.response?.data?.message || "Não foi possível fazer login")
                 return
             }
@@ -49,7 +49,7 @@ export function SignIn(){
         }
     }
 
-    return(
+    return (
         <div>
             <div className="rounded-md border border-gray-500 bg-gray-600 px-3 py-3 sm:px-4 sm:py-4">
 
@@ -61,7 +61,7 @@ export function SignIn(){
                     <p className="mt-1 text-sm leading-5 text-gray-300 sm:text-base sm:leading-6">
                         Entre usando seu e-mail e senha cadastrados
                     </p>
-                </div>                
+                </div>
 
                 <form className="mt-4 space-y-2.5" onSubmit={handleSubmit(onSubmit)} noValidate>
                     <Input
@@ -112,7 +112,7 @@ export function SignIn(){
 
                 <Button variant="color" onClick={() => navigate("cadastro")}>Criar conta</Button>
             </div>
-            
+
         </div>
     )
 }
