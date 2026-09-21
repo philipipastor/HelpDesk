@@ -1,23 +1,26 @@
 import { Technicians } from "../../../../data/Technician"
 import type { Technician } from "../../../../types/technician"
 
+import { api } from "../../../../services/api"
+import { AxiosError } from "axios"
+
 export type TechnicianInput = Pick<Technician, "name" | "email" | "availability">
 
 export function getTechnician(id: string) {
     return Technicians.find(technician => technician.id === id)
 }
 
-// Simulação em memória: substituir por POST /technicians na integração.
-// A senha não é armazenada nos dados de exemplo.
 export async function createTechnician(data: TechnicianInput & { password: string }) {
-    const technician: Technician = {
-        id: crypto.randomUUID(),
-        name: data.name,
-        email: data.email,
-        availability: [...data.availability],
+    try {
+        const response = await api.post<Technician>("/technicians", data)
+        return response.data
+    } catch (error) {
+        const message = error instanceof AxiosError
+            ? error.response?.data?.message || "Não foi possível cadastrar o técnico"
+            : "Ocorreu um erro inesperado"
+
+        throw new Error(message)
     }
-    Technicians.push(technician)
-    return technician
 }
 
 // Substituir por PUT /technicians/:id na integração.
