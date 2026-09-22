@@ -20,7 +20,7 @@ export function Avatar({ name, variant = "primary" }: Props) {
         .slice(0, 2)
 
     return (
-        <div className={classMerge(["flex items-center justify-center rounded-full bg-blue-dark text-xs uppercase text-gray-600"], variants.Avatar[variant])}>
+        <div className={classMerge(["flex shrink-0 items-center justify-center rounded-full bg-blue-dark text-xs uppercase text-gray-600"], variants.Avatar[variant])}>
             {initials}
         </div>
     )

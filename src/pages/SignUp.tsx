@@ -52,7 +52,7 @@ export function SignUp(){
         <div>
             <div className="rounded-md border border-gray-500 bg-gray-600 px-3 py-3 sm:px-4 sm:py-4">
 
-                <div className="mb-14">
+                <div className="mb-8 sm:mb-14">
                     <h2 className="text-lg font-semibold leading-5 text-gray-200 sm:text-xl sm:leading-6">
                         Crie sua conta
                     </h2>

@@ -39,7 +39,7 @@ export function Status({ status }: Props) {
                 alt="ícone de status"
             />
 
-            {currentStatus.label}
+            <span>{currentStatus.label}</span>
         </span>
     )
 }

@@ -15,24 +15,24 @@ export function Modal({isOpen,title,onClose,children}: Props){
     }
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-            <div className="w-full max-w-md rounded-lg bg-gray-600">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="flex max-h-[calc(100dvh-2rem)] w-full min-w-0 max-w-md flex-col rounded-lg bg-gray-600 wrap-anywhere">
                 
-                <header className="flex items-center justify-between border-b border-gray-500 px-6 py-4">
-                    <h2 className="font-semibold text-gray-200">
+                <header className="flex shrink-0 items-center justify-between gap-3 border-b border-gray-500 px-6 py-4">
+                    <h2 className="min-w-0 font-semibold text-gray-200">
                         {title}
                     </h2>
 
                     <button
                         type="button"
                         onClick={onClose}
-                        className="cursor-pointer"
+                        className="shrink-0 cursor-pointer"
                     >
                         <img src={iconClosed} alt="ícone de fechar"/>
                     </button>
                 </header>
 
-                <div className="p-6">
+                <div className="min-h-0 overflow-y-auto overscroll-contain p-6">
                     {children}
                 </div>
             </div>
