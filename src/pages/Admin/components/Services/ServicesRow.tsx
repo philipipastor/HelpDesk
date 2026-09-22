@@ -23,7 +23,7 @@ export function ServicesRow({ service }: Props) {
         <>
             <tr className="border-b border-gray-500 last:border-b-0">
                 <td className=" px-4 py-3 text-sm font-medium text-gray-100">
-                    {service.title}
+                    <span className="block max-lg:truncate" title={service.title}>{service.title}</span>
                 </td>
 
                 <td className="px-4 py-3 text-sm text-gray-200">
@@ -31,23 +31,24 @@ export function ServicesRow({ service }: Props) {
                 </td>
 
                 <td>
-                    <span className={`rounded-full px-3 py-1 text-sm font-medium ${status
+                    <span className={`inline-flex size-7 items-center justify-center rounded-full text-sm font-medium lg:inline lg:size-auto lg:px-3 lg:py-1 ${status
                         ? "bg-feedback-done/20 text-feedback-done"
                         : "bg-feedback-danger/20 text-feedback-danger"
                         }`}
                     >
-                        {status ? "Ativo" : "Inativo"}
+                        <img src={status ? iconActivate : iconBan} alt="" className="size-4 lg:hidden" />
+                        <span className="sr-only lg:not-sr-only">{status ? "Ativo" : "Inativo"}</span>
                     </span>
                 </td>
 
                 <td>
-                    <Button className="flex items-center gap-1 text-xs font-bold text-gray-300 cursor-pointer hover:text-gray-100" onClick={() => setStatus(!status)}>
+                    <Button className="flex min-h-7 min-w-4 items-center justify-center gap-1 text-xs font-bold text-gray-300 cursor-pointer hover:text-gray-100 lg:min-h-0 lg:min-w-0 lg:justify-start" onClick={() => setStatus(!status)}>
                         <img src={status ? iconBan : iconActivate} alt="ícone de ativar/desativar" />
-                        {status ? "Desativar" : "Ativar"}
+                        <span className="sr-only lg:not-sr-only">{status ? "Desativar" : "Ativar"}</span>
                     </Button>
                 </td>
 
-                <td className="px-4 py-3 flex items-center justify-end gap-2">
+                <td className="px-4 py-3 lg:flex lg:items-center lg:justify-end lg:gap-2">
                     <Button variant="icon" onClick={() => setModal(true)}>
                         <img src={iconEdit} alt="ícone de editar" />
                     </Button>

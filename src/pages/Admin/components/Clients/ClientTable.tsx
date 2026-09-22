@@ -45,7 +45,7 @@ export function ClientTable() {
                 </p>
             }
         <div className="relative w-full min-w-0 overflow-x-auto rounded-lg border border-gray-500">
-            <Table className="w-full table-fixed border-collapse lg:min-w-[480px] lg:table-auto max-lg:[&_th]:truncate max-lg:[&_th]:px-2 max-lg:[&_th]:text-[11px] max-lg:[&_td]:px-2 max-lg:[&_td]:text-[11px] max-lg:[&_td_button]:mt-0">
+            <Table className="w-full table-fixed border-collapse lg:min-w-120 lg:table-auto max-lg:[&_th]:truncate max-lg:[&_th]:px-2 max-lg:[&_th]:text-[11px] max-lg:[&_td]:px-2 max-lg:[&_td]:text-[11px] max-lg:[&_td_button]:mt-0">
                     <thead>
                         <tr className="border-b border-gray-500 text-left">
                             <th className="px-4 py-3 text-xs font-normal text-gray-400">

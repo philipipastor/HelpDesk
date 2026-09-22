@@ -22,21 +22,21 @@ export function ClientRow({ client }: Props) {
         <>
             <tr className="border-b border-gray-500 last:border-b-0">
                 <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
+                    <div className="flex min-w-0 items-center gap-2 lg:gap-3 max-lg:[&>div]:size-7 max-lg:[&>div]:text-[10px]">
                         <Avatar name={client.name} />
 
-                        <span className="text-sm font-medium text-gray-100">
+                        <span className="text-sm font-medium text-gray-100 max-lg:truncate max-lg:text-xs" title={client.name}>
                             {client.name}
                         </span>
                     </div>
                 </td>
 
                 <td className="px-4 py-3 text-sm text-gray-200">
-                    {client.email}
+                    <span className="block max-lg:truncate" title={client.email}>{client.email}</span>
                 </td>
 
                 <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex items-center justify-end gap-1 lg:gap-2">
                         <Button
                             type="button"
                             variant="icon"
