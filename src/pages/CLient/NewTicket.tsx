@@ -63,7 +63,7 @@ export function NewTicket() {
     }
 
     return (
-        <div className="w-full px-8 py-10">
+        <div className="w-full min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
 
             <div className="mx-auto w-full max-w-5xl">
 
@@ -71,9 +71,9 @@ export function NewTicket() {
                     Novo chamado
                 </h1>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-[1fr_320px] overflow-hidden rounded-xl border border-gray-500 bg-gray-600">
+                <form onSubmit={handleSubmit(onSubmit)} className="grid min-w-0 grid-cols-1 gap-4 bg-gray-600 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-0 lg:overflow-hidden lg:rounded-xl lg:border lg:border-gray-500">
 
-                    <section className="border-r border-gray-500 p-8">
+                    <section className="min-w-0 rounded-xl border border-gray-500 p-5 sm:p-8 lg:rounded-none lg:border-0 lg:border-r">
 
                         <h2 className="text-base font-semibold text-gray-200">
                             Informações
@@ -114,7 +114,7 @@ export function NewTicket() {
                                 <select
                                     value={serviceId}
                                     {...register("service")}
-                                    className="w-full border-b border-gray-500 bg-transparent py-2 text-sm text-gray-100 outline-none focus:border-blue-base"
+                                    className="w-full min-w-0 max-w-full border-b border-gray-500 bg-transparent py-2 text-sm text-gray-100 outline-none focus:border-blue-base"
                                 >
                                     <option value="" disabled>
                                         Selecione a categoria de atendimento
@@ -131,7 +131,7 @@ export function NewTicket() {
 
                     </section>
 
-                    <aside className="p-8">
+                    <aside className="min-w-0 rounded-xl border border-gray-500 p-5 sm:p-8 lg:rounded-none lg:border-0">
 
                         <h2 className="text-base font-semibold text-gray-200">
                             Resumo

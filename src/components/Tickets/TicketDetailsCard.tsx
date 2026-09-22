@@ -52,7 +52,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
     }
 
     return (
-        <div className={role === "technician" ? "w-full px-6 py-7 md:px-12 md:py-13" : "w-full px-8 py-10"}>
+        <div className={role === "technician" ? "w-full min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-10 xl:px-12 xl:py-13" : "w-full min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-10"}>
             <div className={role === "technician" ? "mx-auto w-full max-w-200" : "mx-auto w-full max-w-5xl"}>
 
                 <button
@@ -74,7 +74,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                     </h1>
 
                     {role === "admin" && (
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                             <Button className="flex w-auto h-10 items-center gap-2 px-4 rounded-md bg-gray-500 text-gray-100 cursor-pointer hover:bg-gray-400">
                                 <img src={iconProgress} alt="" className="h-4 w-4" />
                                 Em atendimento
@@ -87,7 +87,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                         </div>
                     )}
                     {role === "technician" && (
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                             <Button className="flex w-auto h-10 items-center gap-2 px-4 rounded-[5px] bg-gray-200 text-gray-600 cursor-pointer hover:bg-gray-100">
                                 <img src={iconProgress} alt="" className="h-4 w-4 brightness-0 invert" />
                                 Iniciar atendimento
@@ -101,12 +101,12 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                     )}
                 </div>
 
-                <div className={role === "technician" ? "grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,480px)_296px] lg:gap-x-6 lg:gap-y-3" : "grid grid-cols-[1fr_320px] gap-6"}>
+                <div className={role === "technician" ? "grid min-w-0 grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,480px)_296px] xl:gap-x-6 xl:gap-y-3 [&>section]:min-w-0 [&>aside]:min-w-0" : "grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6 [&>section]:min-w-0 [&>aside]:min-w-0"}>
 
-                    <section className={role === "technician" ? "rounded-[10px] border border-gray-500 p-6 lg:col-start-1 lg:row-start-1" : "rounded-xl border border-gray-500 p-7"}>
+                    <section className={role === "technician" ? "rounded-[10px] border border-gray-500 p-5 sm:p-6 xl:col-start-1 xl:row-start-1" : "rounded-xl border border-gray-500 p-5 sm:p-7"}>
 
-                        <div className="mb-6 flex items-start justify-between">
-                            <div>
+                        <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
+                            <div className="min-w-0 flex-1 basis-32">
                                 <span className="text-xs text-gray-200">
                                     {ticket.id}
                                 </span>
@@ -139,7 +139,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                             </p>
                         </div>
 
-                        <div className="mt-7 grid grid-cols-2 gap-8">
+                        <div className="mt-7 grid grid-cols-2 gap-3 sm:gap-8">
                             <div>
                                 <span className="text-xs text-gray-400">
                                     Criado em
@@ -180,7 +180,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
 
                     </section>
 
-                    <aside className={role === "technician" ? "rounded-[10px] border border-gray-500 p-6 lg:col-start-2 lg:row-start-1 lg:row-span-2" : "rounded-xl border border-gray-500 p-7"}>
+                    <aside className={role === "technician" ? "rounded-[10px] border border-gray-500 p-5 sm:p-6 xl:col-start-2 xl:row-start-1 xl:row-span-2" : "rounded-xl border border-gray-500 p-5 sm:p-7"}>
 
                         <div>
                             <span className="text-xs text-gray-400">
@@ -194,7 +194,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                                         variant="primary"
                                     />
 
-                                    <div>
+                                    <div className="min-w-0">
                                         <p className="text-sm font-medium text-gray-200">
                                             {ticket.technician.name}
                                         </p>
@@ -242,7 +242,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                                 {additionalServices.map((service) => (
                                     <div
                                         key={service.id}
-                                        className="flex items-center justify-between"
+                                        className="flex items-start justify-between gap-3 [&>span:last-child]:shrink-0"
                                     >
                                         <span className="text-sm text-gray-200">
                                             {service.title}
@@ -273,7 +273,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                     </aside>
 
                     {role === "technician" && (
-                        <section className="rounded-[10px] border border-gray-500 p-6 lg:col-start-1 lg:row-start-2">
+                        <section className="rounded-[10px] border border-gray-500 p-5 sm:p-6 xl:col-start-1 xl:row-start-2">
                             <div className="mb-4 flex items-center justify-between gap-4">
                                 <h2 className="text-sm font-bold text-gray-200">Serviços adicionais</h2>
                                 <Button

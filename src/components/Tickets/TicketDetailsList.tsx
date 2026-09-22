@@ -15,7 +15,7 @@ export function TicketDetailsList({ role }: Props) {
 
     if (selectedTickets.length === 0) {
         return (
-            <div className="px-8 py-10">
+            <div className="px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
                 <h1 className="text-xl font-semibold text-blue-dark">Chamado não encontrado</h1>
                 <Link to="/" className="mt-4 inline-block text-sm text-gray-300">Voltar para chamados</Link>
             </div>

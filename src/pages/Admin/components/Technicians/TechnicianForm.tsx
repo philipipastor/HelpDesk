@@ -51,7 +51,7 @@ export function TechnicianForm({ technician }: Props) {
     }
 
     return (
-        <section className="w-full px-6 py-8 md:px-8 md:py-10">
+        <section className="w-full min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
             <form onSubmit={handleSubmit(onSubmit)} noValidate className="mx-auto w-full max-w-200">
                 <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
                     <div>
@@ -62,7 +62,7 @@ export function TechnicianForm({ technician }: Props) {
                             {technician ? "Editar técnico" : "Novo técnico"}
                         </h1>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex w-full flex-wrap gap-2 sm:w-auto [&>button]:min-w-0 [&>button]:flex-1 [&>button]:px-3 sm:[&>button]:flex-none sm:[&>button]:px-4">
                         <Button disabled={isSubmitting} onClick={() => navigate("/tecnicos")} className="h-10 rounded-[5px] bg-gray-500 px-4 text-sm font-bold text-gray-100 hover:bg-gray-400 disabled:opacity-50 cursor-pointer">Cancelar</Button>
                         <Button type="submit" disabled={isSubmitting} className="h-10 rounded-[5px] bg-gray-200 px-4 text-sm font-bold text-gray-600 hover:bg-gray-100 disabled:opacity-50 cursor-pointer">
                             {isSubmitting ? "Salvando..." : technician ? "Salvar alterações" : "Cadastrar técnico"}
@@ -71,17 +71,23 @@ export function TechnicianForm({ technician }: Props) {
                 </header>
                 {error && <p role="alert" className="mb-4 text-sm text-feedback-danger">{error}</p>}
 
-                <div className="grid items-start gap-6 lg:grid-cols-[296px_minmax(0,1fr)]">
+                <div className="grid min-w-0 grid-cols-1 items-start gap-4 sm:gap-6 lg:grid-cols-[296px_minmax(0,1fr)] [&>section]:min-w-0">
                     <section className="rounded-[10px] border border-gray-500 p-6">
                         <h2 className="text-base font-semibold text-gray-200">Dados pessoais</h2>
                         <p className="mt-1 mb-6 text-xs text-gray-300">Defina as informações do perfil de técnico</p>
 
                         {technician && <Avatar name={technician.name} />}
                         <Input legenda="Nome" aria-label="Nome" placeholder="Nome completo" autoComplete="name" {...register("name")} aria-invalid={!!errors.name} aria-describedby={errors.name ? "name-error" : undefined} />
-                        {errors.name && <p id="name-error" role="alert" className="text-xs text-feedback-danger">{errors.name.message}</p>}
+                        {errors.name && 
+                            <p id="name-error" role="alert" className="text-xs text-feedback-danger">
+                                {errors.name.message}
+                            </p>}
 
                         <Input legenda="E-mail" aria-label="E-mail" placeholder="exemplo@mail.com" type="email" autoComplete="email" {...register("email")} aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} />
-                        {errors.email && <p id="email-error" role="alert" className="text-xs text-feedback-danger">{errors.email.message}</p>}
+                        {errors.email && 
+                            <p id="email-error" role="alert" className="text-xs text-feedback-danger">
+                                {errors.email.message}
+                            </p>}
 
                         {!technician && <>
                             <Input legenda="Senha" aria-label="Senha" placeholder="Defina a senha de acesso" type="password" autoComplete="new-password" {...register("password")} aria-invalid={!!errors.password} aria-describedby="password-help" />

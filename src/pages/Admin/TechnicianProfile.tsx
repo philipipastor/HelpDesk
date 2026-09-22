@@ -8,7 +8,7 @@ export function TechnicianProfile() {
 
     if (id && !technician) {
         return (
-            <section className="px-8 py-10">
+            <section className="px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
                 <h1 className="text-xl font-semibold text-blue-dark">Técnico não encontrado</h1>
                 <Link to="/tecnicos" className="mt-4 inline-block text-sm text-blue-base">Voltar para técnicos</Link>
             </section>

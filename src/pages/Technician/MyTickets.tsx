@@ -15,7 +15,7 @@ export function MyTickets() {
     )
 
     return (
-        <div className="w-full px-10 py-10">
+        <div className="w-full min-w-0 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
             <h1 className="mb-8 text-2xl font-semibold text-blue-dark">
                 Meus chamados
             </h1>

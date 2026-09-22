@@ -20,11 +20,11 @@ export function TicketCard({ ticket }: TicketCardProps) {
     const navigate = useNavigate()
 
     return (
-        <article className="w-full max-w-sm rounded-xl border border-gray-500 bg-gray-600 p-4">
+        <article className="w-full min-w-0 max-w-sm rounded-xl border border-gray-500 bg-gray-600 p-4 wrap-anywhere">
 
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
 
-                <div>
+                <div className="min-w-0 flex-1 basis-28">
                     <span className="text-xs text-gray-400">
                         {ticket.id}
                     </span>
@@ -38,7 +38,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 flex-wrap items-center gap-2">
                     <Button className="w-7.5 h-7.5 bg-gray-500 hover:bg-gray-400 rounded-md flex items-center justify-center cursor-pointer"
                             onClick={() => navigate(`/ticket/${ticket.id}`)}>
                         <img
@@ -74,7 +74,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
 
             </div>
 
-            <div className="mt-5 flex items-center justify-between border-b border-gray-500 pb-4">
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-b border-gray-500 pb-4">
                 <span className="text-xs text-gray-200">
                     {formatDate(ticket.updatedAt)}
                 </span>
@@ -84,8 +84,8 @@ export function TicketCard({ ticket }: TicketCardProps) {
                 </span>
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex min-w-0 flex-1 basis-24 items-center gap-2">
                     <Avatar
                         name={ticket.client.name}
                         variant="secondary"
