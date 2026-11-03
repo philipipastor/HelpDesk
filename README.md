@@ -1,35 +1,29 @@
 # HelpDesk
 
-Interface web de um sistema de gerenciamento de chamados de suporte, desenvolvida com React e TypeScript.
+Sistema de gerenciamento de chamados de suporte, com API em Node.js e interface web em React, ambas escritas em TypeScript.
 
 A aplicação possui experiências distintas para **administradores, técnicos e clientes**, com rotas e funcionalidades organizadas de acordo com o perfil do usuário.
 
-> **Status:** projeto em desenvolvimento. A interface está estruturada para integração com a API.
+> **Status:** projeto em desenvolvimento. A interface já está integrada à API, e o deploy ainda não foi feito.
 
 ## Funcionalidades
 
-- Autenticação e persistência da sessão do usuário
+- Autenticação com JWT e persistência da sessão do usuário
 - Controle de acesso baseado em três perfis: `admin`, `technician` e `client`
-- Rotas específicas de acordo com o perfil autenticado
-- Área administrativa para chamados, técnicos, clientes e serviços
-- Área do técnico para acompanhamento de chamados
-- Área do cliente para criação e acompanhamento de chamados
-- Visualização de detalhes dos chamados
-- Gerenciamento de status
-- Formulários com validação
-- Componentes reutilizáveis para tabelas, modais, inputs, botões e sidebar
-- Preparação para consumo de API REST com Axios
+- Cadastro de clientes, edição do próprio perfil e troca de senha
+- Gerenciamento de técnicos e de seus horários de atendimento
+- Gerenciamento de clientes, com exclusão dos chamados junto com a conta
+- Catálogo de serviços, com desativação sem perder o histórico dos chamados
+- Criação de chamados pelo cliente, escolhendo o serviço e o técnico responsável
+- Serviços adicionais incluídos pelo técnico, com o valor total de cada chamado
+- Status do chamado: `Aberto`, `Em atendimento` e `Encerrado`
+- Layout responsivo, com menu e listagens adaptados para o celular
 
 ## Tecnologias
 
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- React Router
-- React Hook Form
-- Zod
-- Axios
+**Back-end:** Node.js, TypeScript, Express, PostgreSQL, Prisma, Zod, JWT, bcryptjs, Docker, Jest e Supertest
+
+**Front-end:** React, TypeScript, Vite, Tailwind CSS, React Router, React Hook Form, Zod e Axios
 
 ## Perfis da aplicação
 
@@ -37,39 +31,73 @@ A aplicação possui experiências distintas para **administradores, técnicos e
 Gerencia chamados, técnicos, clientes e serviços.
 
 ### Técnico
-Acompanha os chamados atribuídos e seus respectivos status.
+Acompanha os chamados atribuídos, altera o status e inclui serviços adicionais.
 
 ### Cliente
-Cria novos chamados e acompanha os chamados existentes.
+Cria novos chamados, acompanha o próprio histórico e gerencia a própria conta.
 
 ## Estrutura
 
-A aplicação está organizada em componentes reutilizáveis, páginas separadas por perfil, contexto de autenticação, rotas específicas, serviços, tipos e utilitários.
-
 ```text
-src/
-├── components/
-├── context/
-├── pages/
-│   ├── Admin/
-│   ├── CLient/
-│   └── Technician/
-├── routes/
-├── services/
-├── types/
-└── utils/
+HelpDesk/
+├── BackEnd/
+│   ├── prisma/       # esquema, migrations e seed do banco
+│   ├── src/          # rotas, controllers, validações e middlewares
+│   └── tests/        # testes automatizados da API
+└── FrontEnd/
+    └── src/
+        ├── components/
+        ├── context/
+        ├── pages/    # Admin, CLient e Technician
+        ├── routes/
+        ├── services/
+        ├── types/
+        └── utils/
 ```
 
 ## Como executar
 
+É necessário ter o Node.js 22 ou superior e o Docker.
+
+Em um terminal, inicie a API e o banco de dados:
+
 ```bash
+cd BackEnd
+docker compose up --build
+```
+
+A API ficará disponível em `http://localhost:3333`. Na inicialização, o container aplica as migrations e cria os dados iniciais.
+
+Em outro terminal, inicie a interface:
+
+```bash
+cd FrontEnd
 npm install
 npm run dev
 ```
 
+A interface ficará disponível em `http://localhost:5173`.
+
+### Contas iniciais
+
+A senha de todas as contas é `123456`. Troque essas senhas em ambientes reais.
+
+| Perfil | E-mail |
+|---|---|
+| Administrador | `admin@helpdesk.com` |
+| Técnico 1 | `tecnico1@helpdesk.com` |
+| Técnico 2 | `tecnico2@helpdesk.com` |
+| Técnico 3 | `tecnico3@helpdesk.com` |
+
+Contas de cliente são criadas pela própria tela de cadastro.
+
+## Documentação da API
+
+As rotas, as regras de negócio, a execução sem Docker e os testes estão descritos no [README do back-end](BackEnd/README.md).
+
 ## Aprendizados
 
-O projeto trabalha conceitos importantes de aplicações Front-end modernas, incluindo componentização, autenticação, autorização baseada em perfil, formulários, validação, roteamento e preparação para integração com uma API REST.
+O projeto trabalha conceitos importantes de aplicações modernas, incluindo componentização, autenticação, autorização baseada em perfil, formulários, validação, roteamento, modelagem de banco de dados, testes automatizados e integração entre Front-end e API REST.
 
 ## Autor
 
