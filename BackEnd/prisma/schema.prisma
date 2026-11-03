@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TECHNICIAN
+  CLIENT
+}
+
+enum TicketStatus {
+  ABERTO
+  EM_ATENDIMENTO
+  ENCERRADO
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  password     String
+  role         Role
+  availability String[] @default([])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  clientTickets     Ticket[] @relation("ClientTickets")
+  technicianTickets Ticket[] @relation("TechnicianTickets")
+
+  @@index([role])
+}
+
+model Service {
+  id        String   @id @default(uuid())
+  name      String
+  price     Decimal  @db.Decimal(10, 2)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tickets Ticket[]
+}
+
+model Ticket {
+  id           String       @id @default(uuid())
+  number       Int          @unique @default(autoincrement())
+  title        String
+  description  String
+  clientId     String
+  technicianId String
+  serviceId    String
+  servicePrice Decimal      @db.Decimal(10, 2)
+  status       TicketStatus @default(ABERTO)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  client             User                @relation("ClientTickets", fields: [clientId], references: [id], onDelete: Cascade)
+  technician         User                @relation("TechnicianTickets", fields: [technicianId], references: [id], onDelete: Restrict)
+  service            Service             @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  additionalServices AdditionalService[]
+
+  @@index([clientId])
+  @@index([technicianId])
+  @@index([serviceId])
+  @@index([status])
+}
+
+model AdditionalService {
+  id        String   @id @default(uuid())
+  ticketId  String
+  title     String
+  amount    Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+}
