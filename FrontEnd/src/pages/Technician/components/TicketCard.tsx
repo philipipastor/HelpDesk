@@ -6,6 +6,10 @@ import { Status } from "../../../components/Status"
 
 import type { TicketDetails } from "../../../types/TicketDetails"
 
+import { api } from "../../../services/api"
+import { getErrorMessage } from "../../../utils/GetErrorMessage"
+
+import { useState } from "react"
 import { useNavigate } from "react-router"
 
 import iconEdit from "../../../assets/iconEdit.png"
@@ -14,10 +18,22 @@ import iconClose from "../../../assets/clock.png"
 
 type TicketCardProps = {
     ticket: TicketDetails
+    onChanged: () => void
 }
 
-export function TicketCard({ ticket }: TicketCardProps) {
+export function TicketCard({ ticket, onChanged }: TicketCardProps) {
     const navigate = useNavigate()
+    const [error, setError] = useState("")
+
+    async function updateStatus(status: "in_progress" | "closed") {
+        try {
+            setError("")
+            await api.patch(`/tickets/${ticket.id}/status`, { status })
+            onChanged()
+        } catch (error) {
+            setError(getErrorMessage(error, "Não foi possível alterar o status"))
+        }
+    }
 
     return (
         <article className="w-full min-w-0 max-w-sm rounded-xl border border-gray-500 bg-gray-600 p-4 wrap-anywhere">
@@ -26,7 +42,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
 
                 <div className="min-w-0 flex-1 basis-28">
                     <span className="text-xs text-gray-400">
-                        {ticket.id}
+                        {ticket.code}
                     </span>
 
                     <h2 className="mt-1 text-sm font-semibold text-gray-200">
@@ -48,7 +64,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
                     </Button>
 
                     {ticket.status === "open" && (
-                        <Button className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-200 hover:bg-gray-100 px-2 text-xs text-gray-600 cursor-pointer">
+                        <Button onClick={() => updateStatus("in_progress")} className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-200 hover:bg-gray-100 px-2 text-xs text-gray-600 cursor-pointer">
                             <img
                                 src={iconStart}
                                 alt="ícone de iniciar"
@@ -60,7 +76,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
                     )}
 
                     {ticket.status === "in_progress" && (
-                        <Button className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-200 hover:bg-gray-100 px-2 text-xs text-gray-600 cursor-pointer">
+                        <Button onClick={() => updateStatus("closed")} className="flex h-8 w-auto items-center gap-1 rounded-md bg-gray-200 hover:bg-gray-100 px-2 text-xs text-gray-600 cursor-pointer">
                             <img
                                 src={iconClose}
                                 alt="ícone de fechar"
@@ -80,7 +96,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
                 </span>
 
                 <span className="text-xs font-medium text-gray-200">
-                    {formatCurrency(ticket.service.amount + ticket.additionalServices.reduce((total, service) => total + service.amount, 0))}
+                    {formatCurrency(ticket.total)}
                 </span>
             </div>
 
@@ -98,6 +114,10 @@ export function TicketCard({ ticket }: TicketCardProps) {
 
                 <Status status={ticket.status} />
             </div>
+
+            {error &&
+                <p role="alert" className="mt-3 text-xs text-feedback-danger">{error}</p>
+            }
 
         </article>
     )

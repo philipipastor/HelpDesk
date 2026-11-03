@@ -1,7 +1,30 @@
 import { TicketSection } from "./components/TicketSection"
-import { tickets } from "../../data/Tickets"
+
+import type { TicketDetails } from "../../types/TicketDetails"
+
+import { api } from "../../services/api"
+import { getErrorMessage } from "../../utils/GetErrorMessage"
+
+import { useEffect, useState } from "react"
 
 export function MyTickets() {
+    const [tickets, setTickets] = useState<TicketDetails[]>([])
+    const [error, setError] = useState("")
+
+    async function fetchTickets() {
+        try {
+            setError("")
+            const response = await api.get<TicketDetails[]>("/tickets")
+            setTickets(response.data)
+        } catch (error) {
+            setError(getErrorMessage(error, "Não foi possível exibir os chamados"))
+        }
+    }
+
+    useEffect(() => {
+        fetchTickets()
+    }, [])
+
     const ticketsInProgress = tickets.filter(
         (ticket) => ticket.status === "in_progress"
     )
@@ -20,21 +43,30 @@ export function MyTickets() {
                 Meus chamados
             </h1>
 
+            {error &&
+                <p role="alert" className="mb-4 text-sm text-feedback-danger">
+                    {error}
+                </p>
+            }
+
             <section className="space-y-10">
 
                 <TicketSection
                     status="in_progress"
                     tickets={ticketsInProgress}
+                    onChanged={fetchTickets}
                 />
 
                 <TicketSection
                     status="open"
                     tickets={ticketsOpen}
+                    onChanged={fetchTickets}
                 />
 
                 <TicketSection
                     status="closed"
                     tickets={ticketsClosed}
+                    onChanged={fetchTickets}
                 />
 
             </section>

@@ -5,6 +5,9 @@ import { Status } from "../Status"
 
 import { formatCurrency } from "../../utils/FormatCurrency"
 import { formatDate } from "../../utils/FormatDate"
+import { getErrorMessage } from "../../utils/GetErrorMessage"
+
+import { api } from "../../services/api"
 
 import { useNavigate } from "react-router"
 import { useState } from "react"
@@ -21,10 +24,14 @@ import type { UserRole } from "../../types/UserRole"
 type Props = {
     ticket: TicketDetails
     role: UserRole
+    onChanged: (ticket: TicketDetails) => void
 }
 
-export function TicketDetailsCard({ ticket, role }: Props) {
-    const [additionalServices, setAdditionalServices] = useState(ticket.additionalServices)
+export function TicketDetailsCard({ ticket, role, onChanged }: Props) {
+    const additionalServices = ticket.additionalServices
+    const isClosed = ticket.status === "closed"
+    const [error, setError] = useState("")
+    const [modalError, setModalError] = useState("")
     const [description, setDescription] = useState("")
     const [amount, setAmount] = useState("")
 
@@ -33,22 +40,46 @@ export function TicketDetailsCard({ ticket, role }: Props) {
         0
     )
 
-    const total = ticket.service.amount + additionalTotal
-
     const navigate = useNavigate()
 
     const [modal, setModal] = useState<boolean>(false)
 
-    function saveAdditionalService(event: React.FormEvent<HTMLFormElement>) {
+    async function updateStatus(status: "in_progress" | "closed") {
+        try {
+            setError("")
+            const response = await api.patch<TicketDetails>(`/tickets/${ticket.id}/status`, { status })
+            onChanged(response.data)
+        } catch (error) {
+            setError(getErrorMessage(error, "Não foi possível alterar o status"))
+        }
+    }
+
+    async function saveAdditionalService(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
-        setAdditionalServices([...additionalServices, {
-            id: crypto.randomUUID(),
-            title: description.trim(),
-            amount: Number(amount),
-        }])
-        setDescription("")
-        setAmount("")
-        setModal(false)
+
+        try {
+            setModalError("")
+            const response = await api.post<TicketDetails>(`/tickets/${ticket.id}/additional-services`, {
+                title: description.trim(),
+                amount: Number(amount),
+            })
+            onChanged(response.data)
+            setDescription("")
+            setAmount("")
+            setModal(false)
+        } catch (error) {
+            setModalError(getErrorMessage(error, "Não foi possível adicionar o serviço"))
+        }
+    }
+
+    async function removeAdditionalService(serviceId: string) {
+        try {
+            setError("")
+            const response = await api.delete<TicketDetails>(`/tickets/${ticket.id}/additional-services/${serviceId}`)
+            onChanged(response.data)
+        } catch (error) {
+            setError(getErrorMessage(error, "Não foi possível remover o serviço"))
+        }
     }
 
     return (
@@ -75,12 +106,12 @@ export function TicketDetailsCard({ ticket, role }: Props) {
 
                     {role === "admin" && (
                         <div className="flex flex-wrap items-center gap-2">
-                            <Button className="flex w-auto h-10 items-center gap-2 px-4 rounded-md bg-gray-500 text-gray-100 cursor-pointer hover:bg-gray-400">
+                            <Button disabled={ticket.status !== "open"} onClick={() => updateStatus("in_progress")} className="flex w-auto h-10 items-center gap-2 px-4 rounded-md bg-gray-500 text-gray-100 cursor-pointer hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-50">
                                 <img src={iconProgress} alt="" className="h-4 w-4" />
                                 Em atendimento
                             </Button>
 
-                            <Button className="flex w-auto h-10 items-center gap-2 px-4 rounded-md bg-gray-500 text-gray-100 cursor-pointer hover:bg-gray-400">
+                            <Button disabled={isClosed} onClick={() => updateStatus("closed")} className="flex w-auto h-10 items-center gap-2 px-4 rounded-md bg-gray-500 text-gray-100 cursor-pointer hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-50">
                                 <img src={iconCheck} alt="" className="h-4 w-4" />
                                 Encerrado
                             </Button>
@@ -88,18 +119,20 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                     )}
                     {role === "technician" && (
                         <div className="flex flex-wrap items-center gap-2">
-                            <Button className="flex w-auto h-10 items-center gap-2 px-4 rounded-[5px] bg-gray-200 text-gray-600 cursor-pointer hover:bg-gray-100">
+                            <Button disabled={ticket.status !== "open"} onClick={() => updateStatus("in_progress")} className="flex w-auto h-10 items-center gap-2 px-4 rounded-[5px] bg-gray-200 text-gray-600 cursor-pointer hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50">
                                 <img src={iconProgress} alt="" className="h-4 w-4 brightness-0 invert" />
                                 Iniciar atendimento
                             </Button>
 
-                            <Button className="flex w-auto h-10 items-center gap-2 px-4 rounded-[5px] bg-gray-500 text-gray-100 cursor-pointer hover:bg-gray-400">
+                            <Button disabled={isClosed} onClick={() => updateStatus("closed")} className="flex w-auto h-10 items-center gap-2 px-4 rounded-[5px] bg-gray-500 text-gray-100 cursor-pointer hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-50">
                                 <img src={iconCheck} alt="" className="h-4 w-4" />
                                 Encerrar
                             </Button>
                         </div>
                     )}
                 </div>
+
+                {error && <p role="alert" className="mb-4 text-sm text-feedback-danger">{error}</p>}
 
                 <div className={role === "technician" ? "grid min-w-0 grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,480px)_296px] xl:gap-x-6 xl:gap-y-3 [&>section]:min-w-0 [&>aside]:min-w-0" : "grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6 [&>section]:min-w-0 [&>aside]:min-w-0"}>
 
@@ -108,7 +141,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                         <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
                             <div className="min-w-0 flex-1 basis-32">
                                 <span className="text-xs text-gray-200">
-                                    {ticket.id}
+                                    {ticket.code}
                                 </span>
 
                                 <h2 className="mt-2 text-base font-semibold text-gray-200">
@@ -265,7 +298,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                                 </span>
 
                                 <strong className="text-base text-gray-200">
-                                    {formatCurrency(total)}
+                                    {formatCurrency(ticket.total)}
                                 </strong>
                             </div>
                         </div>
@@ -276,26 +309,30 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                         <section className="rounded-[10px] border border-gray-500 p-5 sm:p-6 xl:col-start-1 xl:row-start-2">
                             <div className="mb-4 flex items-center justify-between gap-4">
                                 <h2 className="text-sm font-bold text-gray-200">Serviços adicionais</h2>
-                                <Button
-                                    onClick={() => setModal(true)}
-                                    aria-label="Adicionar serviço"
-                                    className="flex size-7 items-center justify-center rounded-[5px] bg-gray-200 hover:bg-gray-100 cursor-pointer"
-                                >
-                                    <img src={iconPlus} alt="" className="size-4 brightness-0 invert" />
-                                </Button>
+                                {!isClosed && (
+                                    <Button
+                                        onClick={() => setModal(true)}
+                                        aria-label="Adicionar serviço"
+                                        className="flex size-7 items-center justify-center rounded-[5px] bg-gray-200 hover:bg-gray-100 cursor-pointer"
+                                    >
+                                        <img src={iconPlus} alt="" className="size-4 brightness-0 invert" />
+                                    </Button>
+                                )}
                             </div>
                             <div className="space-y-4">
                                 {additionalServices.map(service => (
                                     <div key={service.id} className="flex items-center gap-3 text-xs text-gray-200">
                                         <span className="min-w-0 flex-1">{service.title}</span>
                                         <span className="shrink-0">{formatCurrency(service.amount)}</span>
-                                        <Button
-                                            aria-label={`Remover ${service.title}`}
-                                            onClick={() => setAdditionalServices(additionalServices.filter(item => item.id !== service.id))}
-                                            className="flex size-7 shrink-0 items-center justify-center rounded-[5px] bg-gray-500 hover:bg-gray-400 cursor-pointer"
-                                        >
-                                            <img src={iconRemove} alt="" className="size-3.5" />
-                                        </Button>
+                                        {!isClosed && (
+                                            <Button
+                                                aria-label={`Remover ${service.title}`}
+                                                onClick={() => removeAdditionalService(service.id)}
+                                                className="flex size-7 shrink-0 items-center justify-center rounded-[5px] bg-gray-500 hover:bg-gray-400 cursor-pointer"
+                                            >
+                                                <img src={iconRemove} alt="" className="size-3.5" />
+                                            </Button>
+                                        )}
                                     </div>
                                 ))}
                             </div>
@@ -311,6 +348,7 @@ export function TicketDetailsCard({ ticket, role }: Props) {
                             amount={amount}
                             setAmount={setAmount}
                             saveAdditionalService={saveAdditionalService}
+                            error={modalError}
                         />
                     )}
 

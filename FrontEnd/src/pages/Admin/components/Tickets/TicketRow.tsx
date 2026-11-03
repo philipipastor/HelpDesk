@@ -25,7 +25,7 @@ export function TicketRow({ ticket }: Props) {
             </td>
 
             <td className="hidden px-4 py-3 text-xs font-medium text-gray-100 lg:table-cell">
-                {ticket.id}
+                {ticket.code}
             </td>
 
             <td className="px-4 py-3">
@@ -41,7 +41,7 @@ export function TicketRow({ ticket }: Props) {
             </td>
 
             <td className="hidden px-4 py-3 whitespace-nowrap text-sm text-gray-200 lg:table-cell">
-                {formatCurrency(ticket.service.amount + ticket.additionalServices.reduce((total, service) => total + service.amount, 0))}
+                {formatCurrency(ticket.total)}
             </td>
 
             <td className="hidden px-4 py-3 lg:table-cell">

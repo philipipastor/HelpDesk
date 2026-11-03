@@ -8,9 +8,10 @@ import type { StatusType } from "../../../types/Status"
 type TicketSectionProps = {
     status: StatusType
     tickets: TicketDetails[]
+    onChanged: () => void
 }
 
-export function TicketSection({ status,tickets }: TicketSectionProps) {
+export function TicketSection({ status, tickets, onChanged }: TicketSectionProps) {
     return (
         <div>
             <div className="mb-4">
@@ -22,6 +23,7 @@ export function TicketSection({ status,tickets }: TicketSectionProps) {
                     <TicketCard
                         key={ticket.id}
                         ticket={ticket}
+                        onChanged={onChanged}
                     />
                 ))}
             </div>

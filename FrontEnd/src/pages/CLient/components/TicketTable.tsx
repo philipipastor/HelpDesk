@@ -1,10 +1,38 @@
-import { tickets } from "../../../data/Tickets"
 import { Table } from "../../../components/Table"
 
 import { TicketRow } from "./TicketRow"
 
+import type { TicketDetails } from "../../../types/TicketDetails"
+
+import { api } from "../../../services/api"
+import { getErrorMessage } from "../../../utils/GetErrorMessage"
+
+import { useEffect, useState } from "react"
+
 export function TicketTable() {
+    const [tickets, setTickets] = useState<TicketDetails[]>([])
+    const [error, setError] = useState("")
+
+    useEffect(() => {
+        async function fetchTickets() {
+            try {
+                const response = await api.get<TicketDetails[]>("/tickets")
+                setTickets(response.data)
+            } catch (error) {
+                setError(getErrorMessage(error, "Não foi possível exibir os chamados"))
+            }
+        }
+
+        fetchTickets()
+    }, [])
+
     return (
+        <>
+            {error &&
+                <p className="text-feedback-danger mb-2 text-sm flex items-center justify-center">
+                    {error}
+                </p>
+            }
         <div className="relative w-full min-w-0 overflow-x-auto rounded-xl border border-gray-500">
             <Table className="w-full table-fixed border-collapse lg:min-w-240 lg:table-auto max-lg:[&_th]:truncate max-lg:[&_th]:px-2 max-lg:[&_th]:text-[11px] max-lg:[&_td]:px-2 max-lg:[&_td]:text-[11px] max-lg:[&_td_button]:mt-0">
                 <thead>
@@ -30,5 +58,6 @@ export function TicketTable() {
                 </tbody>
             </Table>
         </div>
+        </>
     )
 }
