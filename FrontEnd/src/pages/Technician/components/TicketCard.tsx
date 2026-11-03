@@ -1,5 +1,5 @@
 import { formatCurrency } from "../../../utils/FormatCurrency"
-import { formatDate } from "../../../utils/FormatDate"
+import { formatSchedule } from "../../../utils/FormatDate"
 import { Button } from "../../../components/Button"
 import { Avatar } from "../../../components/Avatar"
 import { Status } from "../../../components/Status"
@@ -92,7 +92,7 @@ export function TicketCard({ ticket, onChanged }: TicketCardProps) {
 
             <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-b border-gray-500 pb-4">
                 <span className="text-xs text-gray-200">
-                    {formatDate(ticket.updatedAt)}
+                    {formatSchedule(ticket.scheduledDate, ticket.scheduledHour)}
                 </span>
 
                 <span className="text-xs font-medium text-gray-200">

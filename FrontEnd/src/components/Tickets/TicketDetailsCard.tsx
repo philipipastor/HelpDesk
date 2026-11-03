@@ -4,7 +4,7 @@ import { Button } from "../Button"
 import { Status } from "../Status"
 
 import { formatCurrency } from "../../utils/FormatCurrency"
-import { formatDate } from "../../utils/FormatDate"
+import { formatDate, formatSchedule } from "../../utils/FormatDate"
 import { getErrorMessage } from "../../utils/GetErrorMessage"
 
 import { api } from "../../services/api"
@@ -192,6 +192,16 @@ export function TicketDetailsCard({ ticket, role, onChanged }: Props) {
                                     {formatDate(ticket.updatedAt)}
                                 </p>
                             </div>
+                        </div>
+
+                        <div className="mt-7">
+                            <span className="text-xs text-gray-400">
+                                Atendimento agendado
+                            </span>
+
+                            <p className="mt-1 text-sm text-gray-200">
+                                {formatSchedule(ticket.scheduledDate, ticket.scheduledHour)}
+                            </p>
                         </div>
 
                         <div className="mt-7">
