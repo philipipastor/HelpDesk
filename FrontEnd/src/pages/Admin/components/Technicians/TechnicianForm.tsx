@@ -6,7 +6,7 @@ import { Button } from "../../../../components/Button"
 import { Input } from "../../../../components/Input"
 import { Avatar } from "../../../../components/Avatar"
 import type { Technician } from "../../../../types/technician"
-import { availableHours, technicianFormSchema, type TechnicianFormData } from "./technicianFormSchema"
+import { availableHours, defaultHours, technicianFormSchema, type TechnicianFormData } from "./technicianFormSchema"
 import { createTechnician, updateTechnician } from "./technicianService"
 import iconBack from "../../../../assets/arrow-left.png"
 
@@ -21,7 +21,7 @@ export function TechnicianForm({ technician }: Props) {
             name: technician?.name || "",
             email: technician?.email || "",
             password: "",
-            availability: technician?.availability || [],
+            availability: technician?.availability || defaultHours,
             isNew: !technician,
         },
     })
@@ -45,8 +45,8 @@ export function TechnicianForm({ technician }: Props) {
                 await createTechnician({ ...values, password: data.password })
             }
             navigate("/tecnicos")
-        } catch {
-            setError("Não foi possível salvar o técnico. Tente novamente.")
+        } catch (error) {
+            setError(error instanceof Error ? error.message : "Não foi possível salvar o técnico. Tente novamente.")
         }
     }
 
@@ -100,7 +100,7 @@ export function TechnicianForm({ technician }: Props) {
                         <p className="mt-1 mb-6 text-xs text-gray-300">Selecione os horários de disponibilidade do técnico para atendimento</p>
 
                         <div className="space-y-4">
-                            {[{ title: "Manhã", hours: availableHours.slice(0, 4) }, { title: "Tarde", hours: availableHours.slice(4) }].map(period => (
+                            {[{ title: "Manhã", hours: availableHours.slice(0, 6) }, { title: "Tarde", hours: availableHours.slice(6, 12) }, { title: "Noite", hours: availableHours.slice(12) }].map(period => (
                                 <fieldset key={period.title}>
                                     <legend className="mb-2 text-xs font-bold uppercase text-gray-300">{period.title}</legend>
                                     <div className="flex flex-wrap gap-2">

@@ -1,13 +1,13 @@
-import { Technicians } from "../../../../data/Technician"
 import type { Technician } from "../../../../types/technician"
 
 import { api } from "../../../../services/api"
-import { AxiosError } from "axios"
+import { getErrorMessage } from "../../../../utils/GetErrorMessage"
 
 export type TechnicianInput = Pick<Technician, "name" | "email" | "availability">
 
-export function getTechnician(id: string) {
-    return Technicians.find(technician => technician.id === id)
+export async function getTechnician(id: string) {
+    const response = await api.get<Technician>(`/technicians/${id}`)
+    return response.data
 }
 
 export async function createTechnician(data: TechnicianInput & { password: string }) {
@@ -15,19 +15,15 @@ export async function createTechnician(data: TechnicianInput & { password: strin
         const response = await api.post<Technician>("/technicians", data)
         return response.data
     } catch (error) {
-        const message = error instanceof AxiosError
-            ? error.response?.data?.message || "Não foi possível cadastrar o técnico"
-            : "Ocorreu um erro inesperado"
-
-        throw new Error(message)
+        throw new Error(getErrorMessage(error, "Não foi possível cadastrar o técnico"))
     }
 }
 
-// Substituir por PUT /technicians/:id na integração.
 export async function updateTechnician(id: string, data: TechnicianInput) {
-    const index = Technicians.findIndex(technician => technician.id === id)
-    if (index === -1) throw new Error("Técnico não encontrado")
-    const technician: Technician = { id, ...data, availability: [...data.availability] }
-    Technicians[index] = technician
-    return technician
+    try {
+        const response = await api.put<Technician>(`/technicians/${id}`, data)
+        return response.data
+    } catch (error) {
+        throw new Error(getErrorMessage(error, "Não foi possível salvar o técnico"))
+    }
 }
