@@ -7,6 +7,8 @@ export type TicketCreateData = {
     description: string
     serviceId: string
     technicianId: string
+    scheduledDate: string
+    scheduledHour: string
 }
 
 export async function TicketCreate(data: TicketCreateData) {

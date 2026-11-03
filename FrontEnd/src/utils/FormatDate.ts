@@ -18,3 +18,9 @@ export function formatDate(value?: string | null) {
 
     return (isDateOnly ? dateFormatter : dateTimeFormatter).format(date)
 }
+
+export function formatSchedule(date?: string | null, hour?: string | null) {
+    if (!date || !hour) return "Sem agendamento"
+
+    return `${formatDate(date)} às ${hour}`
+}

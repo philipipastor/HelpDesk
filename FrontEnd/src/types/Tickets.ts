@@ -13,5 +13,7 @@ export type Tickets = {
     client: Pick<Client, "name">
     technician: (Pick<Technician, "name"> & Partial<Pick<Technician, "email">>) | null
     status: StatusType
+    scheduledDate?: string | null
+    scheduledHour?: string | null
     total: number
 }

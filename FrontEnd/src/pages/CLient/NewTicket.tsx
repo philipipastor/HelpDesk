@@ -1,5 +1,6 @@
 import { Button } from "../../components/Button"
 import { Input } from "../../components/Input"
+import { DatePicker } from "../../components/DatePicker"
 import { TicketCreate } from "./components/TicketCreate"
 
 import { z } from "zod"
@@ -13,6 +14,7 @@ import { api } from "../../services/api"
 import type { Service } from "../../types/Services"
 import type { Technician } from "../../types/technician"
 import { formatCurrency } from "../../utils/FormatCurrency"
+import { formatSchedule } from "../../utils/FormatDate"
 import { getErrorMessage } from "../../utils/GetErrorMessage"
 
 const TicketSchema = z.object({
@@ -20,14 +22,27 @@ const TicketSchema = z.object({
     description: z.string().trim().min(1, "Informe uma descrição"),
     service: z.string().min(1, "Informe uma categoria de serviço"),
     technician: z.string().min(1, "Selecione o técnico responsável"),
+    date: z.string().min(1, "Selecione a data"),
+    hour: z.string().min(1, "Selecione o horário"),
 })
 
 type TicketData = z.infer<typeof TicketSchema>
+
+type Slot = { hour: string, available: boolean }
+
+const periods = [
+    { title: "Manhã", start: "08:00", end: "11:00" },
+    { title: "Tarde", start: "12:00", end: "17:00" },
+    { title: "Noite", start: "18:00", end: "19:00" },
+]
 
 export function NewTicket() {
     const [error, setError] = useState("")
     const [services, setServices] = useState<Service[]>([])
     const [technicians, setTechnicians] = useState<Technician[]>([])
+    const [slots, setSlots] = useState<Slot[]>([])
+    const [isLoadingSlots, setIsLoadingSlots] = useState(false)
+    const [slotsVersion, setSlotsVersion] = useState(0)
 
     const navigate = useNavigate()
 
@@ -48,19 +63,55 @@ export function NewTicket() {
         fetchOptions()
     }, [])
 
-    const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<TicketData>({
+    const { register, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = useForm<TicketData>({
         resolver: zodResolver(TicketSchema),
         defaultValues: {
-            title: "", 
+            title: "",
             description: "",
             service: "",
-            technician: ""
+            technician: "",
+            date: "",
+            hour: ""
         }
     })
     const serviceId = watch("service")
     const technicianId = watch("technician")
+    const date = watch("date")
+    const hour = watch("hour")
     const selectedService = services.find(service => service.id === serviceId)
     const selectedTechnician = technicians.find(technician => technician.id === technicianId)
+    const hasFreeSlot = slots.some(slot => slot.available)
+
+    useEffect(() => {
+        setValue("hour", "")
+        setSlots([])
+        if (!technicianId || !date) return
+
+        // Ignora a resposta antiga se o cliente trocar de técnico ou data antes de ela chegar.
+        let isCurrent = true
+        setIsLoadingSlots(true)
+
+        api.get<Slot[]>(`/technicians/${technicianId}/slots`, { params: { date } })
+            .then(response => {
+                if (isCurrent) setSlots(response.data)
+            })
+            .catch(error => {
+                if (isCurrent) setError(getErrorMessage(error, "Não foi possível carregar os horários"))
+            })
+            .finally(() => {
+                if (isCurrent) setIsLoadingSlots(false)
+            })
+
+        return () => {
+            isCurrent = false
+        }
+    }, [technicianId, date, slotsVersion, setValue])
+
+    function hourPlaceholder() {
+        if (!technicianId || !date) return "Selecione"
+        if (isLoadingSlots) return "Carregando..."
+        return hasFreeSlot ? "Selecione" : "Sem horários"
+    }
 
     async function onSubmit(data: TicketData){
         try {
@@ -69,11 +120,15 @@ export function NewTicket() {
                 title: data.title,
                 description: data.description,
                 serviceId: data.service,
-                technicianId: data.technician
+                technicianId: data.technician,
+                scheduledDate: data.date,
+                scheduledHour: data.hour
             })
             navigate("/")
         } catch (error) {
             setError(getErrorMessage(error, "Não foi possível criar o chamado"))
+            // Outro cliente pode ter ocupado o horário: atualiza a lista para ele aparecer como ocupado.
+            setSlotsVersion(version => version + 1)
         }
     }
 
@@ -163,6 +218,55 @@ export function NewTicket() {
                                 {errors.technician && <p id="technician-error" role="alert" className="text-xs text-feedback-danger">{errors.technician.message}</p>}
                             </div>
 
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="min-w-0">
+                                    <label htmlFor="ticket-date" className="mb-2 block text-sm font-medium uppercase leading-1.75 text-gray-300">
+                                        Data
+                                    </label>
+
+                                    <DatePicker
+                                        id="ticket-date"
+                                        value={date}
+                                        onChange={value => setValue("date", value, { shouldValidate: true })}
+                                    />
+                                    {errors.date && <p id="date-error" role="alert" className="mt-1 text-xs text-feedback-danger">{errors.date.message}</p>}
+                                </div>
+
+                                <div className="min-w-0">
+                                    <label htmlFor="ticket-hour" className="mb-2 block text-sm font-medium uppercase leading-1.75 text-gray-300">
+                                        Horário
+                                    </label>
+
+                                    <select
+                                        id="ticket-hour"
+                                        value={hour}
+                                        disabled={!hasFreeSlot}
+                                        {...register("hour")}
+                                        className="w-full min-w-0 max-w-full border-b border-gray-500 bg-transparent py-2 text-sm text-gray-100 outline-none focus:border-blue-base disabled:cursor-not-allowed disabled:text-gray-400"
+                                    >
+                                        <option value="" disabled>
+                                            {hourPlaceholder()}
+                                        </option>
+
+                                        {periods.map(period => {
+                                            const periodSlots = slots.filter(slot => slot.hour >= period.start && slot.hour <= period.end)
+                                            if (periodSlots.length === 0) return null
+
+                                            return (
+                                                <optgroup key={period.title} label={period.title}>
+                                                    {periodSlots.map(slot => (
+                                                        <option key={slot.hour} value={slot.hour} disabled={!slot.available}>
+                                                            {slot.available ? slot.hour : `${slot.hour} (ocupado)`}
+                                                        </option>
+                                                    ))}
+                                                </optgroup>
+                                            )
+                                        })}
+                                    </select>
+                                    {errors.hour && <p id="hour-error" role="alert" className="mt-1 text-xs text-feedback-danger">{errors.hour.message}</p>}
+                                </div>
+                            </div>
+
                         </div>
 
                     </section>
@@ -209,6 +313,18 @@ export function NewTicket() {
 
                             <p className="mt-1 text-sm font-medium text-gray-200">
                                 {selectedTechnician ? selectedTechnician.name : "Selecione um técnico"}
+                            </p>
+
+                        </div>
+
+                        <div className="mt-6">
+
+                            <span className="text-xs text-gray-400">
+                                Atendimento agendado
+                            </span>
+
+                            <p className="mt-1 text-sm font-medium text-gray-200">
+                                {date && hour ? formatSchedule(date, hour) : "Selecione a data e o horário"}
                             </p>
 
                         </div>
