@@ -21,7 +21,7 @@ export function AdminRoutes(){
             <Route path="/serviços" element={<Services/>} />
             <Route path="/" element={<Tickets/>} />
             <Route path="/ticket/:id" element={<TicketDetails/>} />
-            </Route>
+        </Route>
         <Route path="*" element={<NotFound/>}/>
     </Routes>
     )
