@@ -14,7 +14,8 @@ A aplicação possui experiências distintas para **administradores, técnicos e
 - Gerenciamento de técnicos e de seus horários de atendimento
 - Gerenciamento de clientes, com exclusão dos chamados junto com a conta
 - Catálogo de serviços, com desativação sem perder o histórico dos chamados
-- Criação de chamados pelo cliente, escolhendo o serviço e o técnico responsável
+- Criação de chamados pelo cliente, escolhendo o serviço, o técnico responsável, a data e o horário
+- Agendamento de segunda a sexta, das 08:00 às 20:00, com os horários ocupados bloqueados
 - Serviços adicionais incluídos pelo técnico, com o valor total de cada chamado
 - Status do chamado: `Aberto`, `Em atendimento` e `Encerrado`
 - Layout responsivo, com menu e listagens adaptados para o celular

@@ -78,6 +78,7 @@ Authorization: Bearer SEU_TOKEN
 - `POST /technicians` — ADMIN; recebe a senha provisória. Sem `availability`, usa o horário comercial
 - `GET /technicians` — ADMIN ou CLIENT
 - `GET /technicians/:id` — ADMIN
+- `GET /technicians/:id/slots?date=AAAA-MM-DD` — ADMIN ou CLIENT; lista as próximas horas do técnico nessa data e indica em `available` se cada uma está livre
 - `PUT /technicians/:id` — ADMIN; altera nome, e-mail e horários
 
 ### Clientes
@@ -91,7 +92,7 @@ Authorization: Bearer SEU_TOKEN
 - `PUT /services/:id` — ADMIN; `status: false` desativa o serviço (soft delete)
 
 ### Chamados
-- `POST /tickets` — CLIENT; recebe `title`, `description`, `serviceId` e `technicianId`
+- `POST /tickets` — CLIENT; recebe `title`, `description`, `serviceId`, `technicianId`, `scheduledDate` (`AAAA-MM-DD`) e `scheduledHour` (`HH:00`)
 - `GET /tickets`, `GET /tickets/:id` — ADMIN vê todos, CLIENT os próprios, TECHNICIAN os atribuídos
 - `PATCH /tickets/:id/status` — TECHNICIAN responsável ou ADMIN; recebe `in_progress` ou `closed`
 - `POST /tickets/:id/additional-services` — TECHNICIAN responsável; recebe `title` e `amount`
@@ -109,7 +110,9 @@ O chamado guarda em `servicePrice` o preço do serviço no momento da criação.
 
 ## Disponibilidade
 
-O cliente escolhe o técnico ao criar o chamado. Como o chamado não tem data nem hora, a API considera disponível o técnico que tem pelo menos um horário cadastrado. Para reservar um horário de verdade, seria preciso adicionar data ao chamado ou criar uma agenda.
+O funcionamento é de segunda a sexta, das 08:00 às 20:00. Cada horário é o início de um atendimento de uma hora, então o último começa às 19:00.
+
+O cliente escolhe o técnico, a data e o horário ao criar o chamado. O horário fica ocupado até o chamado ser encerrado. Se dois clientes pedirem o mesmo horário ao mesmo tempo, um índice único no banco aceita apenas o primeiro, e o segundo recebe o status 409. Datas e horas passadas são avaliadas no horário de Brasília.
 
 ## Testes
 
