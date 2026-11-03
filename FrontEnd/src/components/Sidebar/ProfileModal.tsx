@@ -5,7 +5,13 @@ import { Avatar } from "../Avatar"
 
 import type { User } from "../../types/User"
 import type { UserRole } from "../../types/UserRole"
-import type { Technician } from "../../types/technician"
+
+import { api } from "../../services/api"
+import { useAuth } from "../../hook/useAuth"
+import { getErrorMessage } from "../../utils/GetErrorMessage"
+
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router"
 
 import { z } from "zod"
 import { useForm } from "react-hook-form"
@@ -17,7 +23,6 @@ type Props = {
     setModalPassword: (open: boolean) => void
     user: User | null
     role: UserRole | undefined
-    technician: Technician | undefined
 }
 
 const schema = z.object({
@@ -27,7 +32,13 @@ const schema = z.object({
 
 type ProfileData = z.infer<typeof schema>
 
-export function ProfileModal({ modal, setModal, setModalPassword, user, role, technician }: Props) {
+export function ProfileModal({ modal, setModal, setModalPassword, user, role }: Props) {
+    const { updateUser, signOut } = useAuth()
+    const navigate = useNavigate()
+
+    const [error, setError] = useState("")
+    const [availability, setAvailability] = useState(user?.user.availability ?? [])
+
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ProfileData>({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -36,8 +47,45 @@ export function ProfileModal({ modal, setModal, setModalPassword, user, role, te
         }
     })
 
-    function onSubmit(data: ProfileData) {
-        console.log(data)
+    // O admin pode ter alterado os horários depois do login.
+    useEffect(() => {
+        async function fetchAvailability() {
+            try {
+                const response = await api.get<User["user"]>("/users/me")
+                setAvailability(response.data.availability)
+            } catch (error) {
+                setError(getErrorMessage(error, "Não foi possível carregar os horários"))
+            }
+        }
+
+        if (role === "technician") {
+            fetchAvailability()
+        }
+    }, [role])
+
+    async function onSubmit(data: ProfileData) {
+        try {
+            setError("")
+            const response = await api.patch<User["user"]>("/users/me", data)
+            updateUser(response.data)
+            setModal(false)
+        } catch (error) {
+            setError(getErrorMessage(error, "Não foi possível salvar o perfil"))
+        }
+    }
+
+    async function deleteAccount() {
+        if (!confirm("Deseja realmente excluir sua conta? Todos os seus chamados serão removidos e esta ação não poderá ser desfeita.")) {
+            return
+        }
+
+        try {
+            await api.delete("/users/me")
+            signOut()
+            navigate("/", { replace: true })
+        } catch (error) {
+            setError(getErrorMessage(error, "Não foi possível excluir a conta"))
+        }
     }
 
     return (
@@ -79,13 +127,29 @@ export function ProfileModal({ modal, setModal, setModalPassword, user, role, te
                         <p className="text-sm font-bold leading-[1.4] text-gray-200">Disponibilidade</p>
                         <p className="mb-1 text-xs leading-[1.4] text-gray-300">Horários de atendimento definidos pelo admin</p>
 
-                        {technician?.availability.length
+                        {availability.length
                             ?
-                            (technician.availability.map(hours => <p key={hours} className="mt-2 mr-1 inline-flex h-7 items-center justify-center rounded-full border border-gray-500 px-3 text-xs font-bold leading-[1.4] text-gray-400">{hours}</p>))
+                            (availability.map(hours => <p key={hours} className="mt-2 mr-1 inline-flex h-7 items-center justify-center rounded-full border border-gray-500 px-3 text-xs font-bold leading-[1.4] text-gray-400">{hours}</p>))
                             :
                             <p className="mt-3 text-xs leading-[1.4] text-gray-400">Horários não disponíveis</p>
                         }
                     </div>
+                )}
+
+                {role === "client" && (
+                    <button
+                        type="button"
+                        onClick={deleteAccount}
+                        className="text-xs font-bold text-feedback-danger cursor-pointer hover:opacity-70"
+                    >
+                        Excluir minha conta
+                    </button>
+                )}
+
+                {error && (
+                    <p role="alert" className="text-xs text-feedback-danger">
+                        {error}
+                    </p>
                 )}
 
                 <div className="-mx-6 border-t border-gray-500 px-6 pt-6">

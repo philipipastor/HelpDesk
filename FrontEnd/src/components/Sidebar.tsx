@@ -7,8 +7,6 @@ import { Avatar } from "./Avatar"
 
 import { Menus } from "../utils/Menus"
 
-import { Technicians } from "../data/Technician"
-
 import logo from "../assets/Logo_IconDark.png"
 import iconUser from "../assets/circle-user.png"
 import iconLogout from "../assets/log-out.png"
@@ -55,8 +53,6 @@ export function Sidebar() {
             document.removeEventListener("keydown", handleKeyDown)
         }
     }, [menuOpen])
-
-    const technician = Technicians.find(technician => user?.user.id === technician.id)
 
     return (
         <aside className="relative z-40 flex w-full shrink-0 flex-col justify-between bg-gray-100 text-gray-600 lg:z-auto lg:min-h-screen lg:w-64"
@@ -190,7 +186,6 @@ export function Sidebar() {
                     setModalPassword={setModalPassword}
                     user={user}
                     role={role}
-                    technician={technician}
                 />
             )}
 

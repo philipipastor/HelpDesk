@@ -7,7 +7,8 @@ import type { User } from "../types/User";
 type AuthContextData = {
     user: User | null,
     signIn: (user: User) => void,
-    signOut: () => void
+    signOut: () => void,
+    updateUser: (user: User["user"]) => void
 }
 
 const LocalStorageKey = "@helpdesk"
@@ -34,6 +35,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null)
     }
 
+    function updateUser(updatedUser: User["user"]) {
+        localStorage.setItem(`${LocalStorageKey}:user`, JSON.stringify(updatedUser))
+        setUser(current => current && { ...current, user: updatedUser })
+    }
+
     function loadUser() {
         const user = localStorage.getItem(`${LocalStorageKey}:user`)
         const token = localStorage.getItem(`${LocalStorageKey}:token`)
@@ -50,10 +56,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         loadUser()
+
+        // Token expirado ou inválido: volta para o login. O próprio login responde 401 para senha errada.
+        const interceptor = api.interceptors.response.use(undefined, error => {
+            if (error.response?.status === 401 && error.config?.url !== "/sessions") {
+                signOut()
+            }
+
+            return Promise.reject(error)
+        })
+
+        return () => api.interceptors.response.eject(interceptor)
     }, [])
 
     return (
-        <authContext.Provider value={{ user, signIn, signOut }}>
+        <authContext.Provider value={{ user, signIn, signOut, updateUser }}>
             {children}
         </authContext.Provider>
     )

@@ -4,6 +4,10 @@ import { Input } from "../Input"
 
 import iconArrowLeft from "../../assets/arrow-left.png"
 
+import { api } from "../../services/api"
+import { getErrorMessage } from "../../utils/GetErrorMessage"
+
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -22,7 +26,9 @@ type Props = {
 }
 
 export function ChangePasswordModal({ modalPassword, setModalPassword, setModal }: Props) {
-    const { register, handleSubmit, formState: { errors } } = useForm<ChangePasswordData>({
+    const [error, setError] = useState("")
+
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ChangePasswordData>({
         resolver: zodResolver(schema),
         defaultValues: {
             currentPassword: "",
@@ -30,8 +36,14 @@ export function ChangePasswordModal({ modalPassword, setModalPassword, setModal 
         }
     })
 
-    function onSubmit() {
-        // A confirmação da senha atual e o salvamento serão feitos pela API.
+    async function onSubmit(data: ChangePasswordData) {
+        try {
+            setError("")
+            await api.patch("/users/me/password", data)
+            setModalPassword(false)
+        } catch (error) {
+            setError(getErrorMessage(error, "Não foi possível alterar a senha"))
+        }
     }
 
     return (
@@ -80,10 +92,16 @@ export function ChangePasswordModal({ modalPassword, setModalPassword, setModal 
                     </p>
                 )}
                 <p className="mb-8 text-xs italic leading-[1.4] text-gray-400">Mínimo de 6 dígitos</p>
-        
+
+                {error && (
+                    <p role="alert" className="text-xs text-feedback-danger">
+                        {error}
+                    </p>
+                )}
+
                 <div className="-mx-6 border-t border-gray-500 px-6 pt-6">
-                    <Button type="submit" className="flex h-10 w-full items-center justify-center rounded-[5px] bg-gray-200 text-sm font-bold text-gray-600 hover:bg-gray-100 cursor-pointer">
-                        Salvar
+                    <Button type="submit" disabled={isSubmitting} className="flex h-10 w-full items-center justify-center rounded-[5px] bg-gray-200 text-sm font-bold text-gray-600 hover:bg-gray-100 cursor-pointer">
+                        {isSubmitting ? "Salvando" : "Salvar"}
                     </Button>
                 </div>
             </form>
