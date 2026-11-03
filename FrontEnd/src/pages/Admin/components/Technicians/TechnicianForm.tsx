@@ -26,7 +26,6 @@ export function TechnicianForm({ technician }: Props) {
         },
     })
     const selectedHours = watch("availability")
-    const previousHours = technician?.availability.filter(hour => !availableHours.includes(hour)) || []
 
     function toggleHour(hour: string) {
         const hours = selectedHours.includes(hour)
@@ -100,7 +99,7 @@ export function TechnicianForm({ technician }: Props) {
                         <p className="mt-1 mb-6 text-xs text-gray-300">Selecione os horários de disponibilidade do técnico para atendimento</p>
 
                         <div className="space-y-4">
-                            {[{ title: "Manhã", hours: availableHours.slice(0, 6) }, { title: "Tarde", hours: availableHours.slice(6, 12) }, { title: "Noite", hours: availableHours.slice(12) }].map(period => (
+                            {[{ title: "Manhã", hours: availableHours.slice(0, 4) }, { title: "Tarde", hours: availableHours.slice(4, 10) }, { title: "Noite", hours: availableHours.slice(10) }].map(period => (
                                 <fieldset key={period.title}>
                                     <legend className="mb-2 text-xs font-bold uppercase text-gray-300">{period.title}</legend>
                                     <div className="flex flex-wrap gap-2">
@@ -113,13 +112,6 @@ export function TechnicianForm({ technician }: Props) {
                                 </fieldset>
                             ))}
                         </div>
-                        
-                        {previousHours.length > 0 && <div className="mt-4 text-xs text-gray-300">
-                            <p>Horários antigos fora do padrão atual serão preservados. Clique para removê-los:</p>
-                            {previousHours.filter(hour => selectedHours.includes(hour)).map(hour => (
-                                <button key={hour} type="button" onClick={() => toggleHour(hour)} aria-label={`Remover horário antigo ${hour}`} className="mt-2 mr-2 rounded-full border border-blue-base bg-blue-base px-3 py-1 text-gray-600">{hour} ×</button>
-                            ))}
-                        </div>}
                         {errors.availability && <p role="alert" className="mt-3 text-xs text-feedback-danger">{errors.availability.message}</p>}
                     </section>
                 </div>
