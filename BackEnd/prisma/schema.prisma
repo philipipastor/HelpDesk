@@ -56,10 +56,13 @@ model Ticket {
   serviceId    String
   servicePrice Decimal      @db.Decimal(10, 2)
   status       TicketStatus @default(ABERTO)
+  // Um horário ativo por técnico: ver o índice parcial na migration ticket_schedule.
+  scheduledDate DateTime?   @db.Date
+  scheduledHour String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
-  client             User                @relation("ClientTickets", fields: [clientId], references: [id], onDelete: Cascade)
+  client            User                @relation("ClientTickets", fields: [clientId], references: [id], onDelete: Cascade)
   technician         User                @relation("TechnicianTickets", fields: [technicianId], references: [id], onDelete: Restrict)
   service            Service             @relation(fields: [serviceId], references: [id], onDelete: Restrict)
   additionalServices AdditionalService[]

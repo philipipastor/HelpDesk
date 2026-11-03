@@ -22,7 +22,7 @@ const users = [
     name: "Técnico 3",
     email: "tecnico3@helpdesk.com",
     role: Role.TECHNICIAN,
-    availability: ["12:00", "13:00", "14:00", "15:00", "18:00", "19:00", "20:00", "21:00"],
+    availability: ["12:00", "13:00", "14:00", "15:00", "18:00", "19:00"],
   },
 ]
 
