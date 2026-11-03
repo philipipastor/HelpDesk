@@ -8,30 +8,18 @@ import type { Service } from "../../types/Services"
 
 import { useState } from "react"
 
-import { z } from "zod"
+import { serviceSchema, type ServiceFormData } from "./components/Services/serviceFormSchema"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { AxiosError } from "axios"
-
-const serviceSchema = z.object({
-    title: z.string().trim().min(1, "Informe o nome do serviço"),
-    amount: z.string().trim()
-        .min(1, "Informe o valor do serviço")
-        .regex(/^\d+([.,]\d{1,2})?$/, "Informe um valor válido com até 2 casas decimais")
-        .refine(value => {
-            const amount = Number(value.replace(",", "."))
-            return Number.isFinite(amount) && amount > 0
-        }, "O valor deve ser maior que zero")
-})
-
-type serviceData = z.infer<typeof serviceSchema>
 
 export function Services() {
 
     const [modal, setModal] = useState<boolean>(false)
     const [refreshCount, setRefreshCount] = useState(0)
 
-    const { register, handleSubmit, setError, reset, formState: { errors, isSubmitting } } = useForm<serviceData>({
+    const { register, handleSubmit, setError, reset, formState: { errors, isSubmitting } } = useForm<ServiceFormData>({
         resolver: zodResolver(serviceSchema),
         defaultValues: {
             title: "",
@@ -39,7 +27,7 @@ export function Services() {
         }
     })
 
-    async function onSubmit(data: serviceData) {
+    async function onSubmit(data: ServiceFormData) {
         try {
             await api.post<Service>("/services", {
                 title: data.title,

@@ -70,6 +70,8 @@ export function ServicesTable({ refreshCount }: Props) {
                         <ServicesRow
                             key={service.id}
                             service={service}
+                            onChanged={fetchServices}
+                            onError={setError}
                         />
                     ))}
                 </tbody>

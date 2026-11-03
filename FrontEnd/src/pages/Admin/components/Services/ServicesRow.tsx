@@ -3,7 +3,10 @@ import { Button } from "../../../../components/Button"
 
 import type { Service } from "../../../../types/Services"
 
+import { api } from "../../../../services/api"
+
 import { formatCurrency } from "../../../../utils/FormatCurrency"
+import { getErrorMessage } from "../../../../utils/GetErrorMessage"
 
 import { useState } from "react"
 
@@ -13,11 +16,22 @@ import iconActivate from "../../../../assets/circle-check.png"
 
 type Props = {
     service: Service
+    onChanged: () => void
+    onError: (message: string) => void
 }
 
-export function ServicesRow({ service }: Props) {
-    const [status, setStatus] = useState<boolean>(service.status);
+export function ServicesRow({ service, onChanged, onError }: Props) {
+    const status = service.status
     const [modal, setModal] = useState<boolean>(false)
+
+    async function toggleStatus() {
+        try {
+            await api.put(`/services/${service.id}`, { status: !status })
+            onChanged()
+        } catch (error) {
+            onError(getErrorMessage(error, "Não foi possível alterar o serviço"))
+        }
+    }
 
     return (
         <>
@@ -42,7 +56,7 @@ export function ServicesRow({ service }: Props) {
                 </td>
 
                 <td>
-                    <Button className="flex min-h-7 min-w-4 items-center justify-center gap-1 text-xs font-bold text-gray-300 cursor-pointer hover:text-gray-100 lg:min-h-0 lg:min-w-0 lg:justify-start" onClick={() => setStatus(!status)}>
+                    <Button className="flex min-h-7 min-w-4 items-center justify-center gap-1 text-xs font-bold text-gray-300 cursor-pointer hover:text-gray-100 lg:min-h-0 lg:min-w-0 lg:justify-start" onClick={toggleStatus}>
                         <img src={status ? iconBan : iconActivate} alt="ícone de ativar/desativar" />
                         <span className="sr-only lg:not-sr-only">{status ? "Desativar" : "Ativar"}</span>
                     </Button>
@@ -56,7 +70,7 @@ export function ServicesRow({ service }: Props) {
             </tr>
 
             {modal &&
-                <EditServiceModal modal={modal} setModal={setModal} service={service} />
+                <EditServiceModal modal={modal} setModal={setModal} service={service} onChanged={onChanged} />
             }
         </>
     )
