@@ -7,59 +7,74 @@ import { zodResolver } from "@hookform/resolvers/zod"
 
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-import { Services } from "../../data/Services"
+import { api } from "../../services/api"
+import type { Service } from "../../types/Services"
+import type { Technician } from "../../types/technician"
 import { formatCurrency } from "../../utils/FormatCurrency"
+import { getErrorMessage } from "../../utils/GetErrorMessage"
 
 const TicketSchema = z.object({
     title: z.string().trim().min(1, "Informe um título"),
     description: z.string().trim().min(1, "Informe uma descrição"),
     service: z.string().min(1, "Informe uma categoria de serviço"),
+    technician: z.string().min(1, "Selecione o técnico responsável"),
 })
 
 type TicketData = z.infer<typeof TicketSchema>
 
 export function NewTicket() {
     const [error, setError] = useState("")
+    const [services, setServices] = useState<Service[]>([])
+    const [technicians, setTechnicians] = useState<Technician[]>([])
 
     const navigate = useNavigate()
+
+    useEffect(() => {
+        async function fetchOptions() {
+            try {
+                const [servicesResponse, techniciansResponse] = await Promise.all([
+                    api.get<Service[]>("/services"),
+                    api.get<Technician[]>("/technicians"),
+                ])
+                setServices(servicesResponse.data)
+                setTechnicians(techniciansResponse.data.filter(technician => technician.availability.length > 0))
+            } catch (error) {
+                setError(getErrorMessage(error, "Não foi possível carregar os serviços e técnicos"))
+            }
+        }
+
+        fetchOptions()
+    }, [])
 
     const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<TicketData>({
         resolver: zodResolver(TicketSchema),
         defaultValues: {
             title: "", 
             description: "",
-            service: ""
+            service: "",
+            technician: ""
         }
     })
     const serviceId = watch("service")
-    const selectedService = Services.find(service => service.id === serviceId)
+    const technicianId = watch("technician")
+    const selectedService = services.find(service => service.id === serviceId)
+    const selectedTechnician = technicians.find(technician => technician.id === technicianId)
 
     async function onSubmit(data: TicketData){
-        const service = Services.find(item => item.id === data.service)
-        
-        if(!service){
-            return
-        }
-
-        const ticket = {
-            title: data.title,
-            description: data.description,
-            service: {
-                title: service.title,
-                amount: Number(service.amount)
-            }
-        }
-
         try {
-            await TicketCreate(ticket)
+            setError("")
+            await TicketCreate({
+                title: data.title,
+                description: data.description,
+                serviceId: data.service,
+                technicianId: data.technician
+            })
             navigate("/")
         } catch (error) {
-            console.log(error)
-            setError("Não foi possível criar o chamado")
+            setError(getErrorMessage(error, "Não foi possível criar o chamado"))
         }
-    
     }
 
     return (
@@ -120,11 +135,32 @@ export function NewTicket() {
                                         Selecione a categoria de atendimento
                                     </option>
 
-                                     {Services.map(service => (
+                                     {services.map(service => (
                                         <option key={service.id} value={service.id}>{service.title}</option>
                                      ))}   
                                 </select>
                                 {errors.service && <p id="name-error" role="alert" className="text-xs text-feedback-danger">{errors.service.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block text-sm font-medium uppercase leading-1.75 text-gray-300">
+                                    Técnico responsável
+                                </label>
+
+                                <select
+                                    value={technicianId}
+                                    {...register("technician")}
+                                    className="w-full min-w-0 max-w-full border-b border-gray-500 bg-transparent py-2 text-sm text-gray-100 outline-none focus:border-blue-base"
+                                >
+                                    <option value="" disabled>
+                                        Selecione o técnico
+                                    </option>
+
+                                    {technicians.map(technician => (
+                                        <option key={technician.id} value={technician.id}>{technician.name}</option>
+                                    ))}
+                                </select>
+                                {errors.technician && <p id="technician-error" role="alert" className="text-xs text-feedback-danger">{errors.technician.message}</p>}
                             </div>
 
                         </div>
@@ -165,8 +201,20 @@ export function NewTicket() {
 
                         </div>
 
+                        <div className="mt-6">
+
+                            <span className="text-xs text-gray-400">
+                                Técnico responsável
+                            </span>
+
+                            <p className="mt-1 text-sm font-medium text-gray-200">
+                                {selectedTechnician ? selectedTechnician.name : "Selecione um técnico"}
+                            </p>
+
+                        </div>
+
                         <p className="mt-8 text-sm leading-5 text-gray-300">
-                            O chamado será automaticamente atribuído a um técnico disponível
+                            O chamado será atribuído ao técnico selecionado
                         </p>
 
                         <Button type="submit" disabled={isSubmitting}>
