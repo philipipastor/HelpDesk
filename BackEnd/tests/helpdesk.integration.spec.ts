@@ -2,6 +2,7 @@ import request from "supertest"
 import { compare, hash } from "bcryptjs"
 import { Prisma, PrismaClient, Role } from "@prisma/client"
 import { app } from "../src/app"
+import { isPastSlot } from "../src/utils/schedule"
 
 const prisma = new PrismaClient()
 
@@ -24,6 +25,11 @@ async function login(email: string, password = "123456") {
 
 const bearer = (token: string) => ["Authorization", `Bearer ${token}`] as const
 
+// Datas fixas bem distantes de hoje, para o resultado não mudar com o passar do tempo.
+const monday = "2099-01-05"
+const saturday = "2099-01-03"
+const pastMonday = "2020-01-06"
+
 async function scenario() {
   const admin = await createUser(Role.ADMIN, "admin@test.com")
   const client = await createUser(Role.CLIENT, "client@test.com")
@@ -40,6 +46,7 @@ async function scenario() {
 async function createTicket(data: Awaited<ReturnType<typeof scenario>>) {
   const response = await request(app).post("/tickets").set(...bearer(data.clientToken)).send({
     title: "Rede lenta", description: "Cai toda hora", serviceId: data.service.id, technicianId: data.technician.id,
+    scheduledDate: monday, scheduledHour: "08:00",
   })
   expect(response.status).toBe(201)
   return response.body
@@ -127,14 +134,96 @@ describe("Técnicos", () => {
     const { adminToken, clientToken, techToken, technician } = await scenario()
     const path = `/technicians/${technician.id}`
 
-    const updated = await request(app).put(path).set(...bearer(adminToken)).send({ availability: ["20:00", "10:00"] })
-    expect(updated.body.availability).toEqual(["10:00", "20:00"])
-    expect((await request(app).put(path).set(...bearer(adminToken)).send({ availability: ["25:00"] })).status).toBe(400)
+    const updated = await request(app).put(path).set(...bearer(adminToken)).send({ availability: ["19:00", "08:00"] })
+    expect(updated.body.availability).toEqual(["08:00", "19:00"])
+    for (const hour of ["25:00", "07:00", "20:00"]) {
+      expect((await request(app).put(path).set(...bearer(adminToken)).send({ availability: [hour] })).status).toBe(400)
+    }
 
     expect((await request(app).put(path).set(...bearer(techToken)).send({ name: "X" })).status).toBe(403)
     expect((await request(app).put(path).set(...bearer(clientToken)).send({ name: "X" })).status).toBe(403)
     expect((await request(app).get("/technicians").set(...bearer(clientToken))).body).toHaveLength(1)
     expect((await request(app).get("/technicians")).status).toBe(401)
+  })
+})
+
+describe("Agendamento", () => {
+  async function schedulingScenario() {
+    const data = await scenario()
+    await prisma.user.update({ where: { id: data.technician.id }, data: { availability: ["08:00", "09:00"] } })
+    const body = {
+      title: "T", description: "D", serviceId: data.service.id, technicianId: data.technician.id,
+      scheduledDate: monday, scheduledHour: "08:00",
+    }
+    return { ...data, body, auth: bearer(data.clientToken), slotsPath: `/technicians/${data.technician.id}/slots` }
+  }
+
+  it("mostra ocupado e libera o horário quando o chamado é encerrado", async () => {
+    const { auth, body, slotsPath, techToken } = await schedulingScenario()
+
+    const ticket = await request(app).post("/tickets").set(...auth).send(body)
+    expect((await request(app).get(slotsPath).query({ date: monday }).set(...auth)).body).toEqual([
+      { hour: "08:00", available: false },
+      { hour: "09:00", available: true },
+    ])
+
+    await request(app).patch(`/tickets/${ticket.body.id}/status`).set(...bearer(techToken)).send({ status: "in_progress" })
+    expect((await request(app).post("/tickets").set(...auth).send(body)).status).toBe(409)
+
+    await request(app).patch(`/tickets/${ticket.body.id}/status`).set(...bearer(techToken)).send({ status: "closed" })
+    expect((await request(app).get(slotsPath).query({ date: monday }).set(...auth)).body[0].available).toBe(true)
+    expect((await request(app).post("/tickets").set(...auth).send(body)).status).toBe(201)
+  })
+
+  it("aceita só um entre dois pedidos simultâneos do mesmo horário", async () => {
+    const { auth, body } = await schedulingScenario()
+    const responses = await Promise.all([
+      request(app).post("/tickets").set(...auth).send(body),
+      request(app).post("/tickets").set(...auth).send(body),
+    ])
+    expect(responses.map(response => response.status).sort()).toEqual([201, 409])
+    expect(await prisma.ticket.count()).toBe(1)
+  })
+
+  it("o mesmo horário fica livre em outra data e com outro técnico", async () => {
+    const { auth, body } = await schedulingScenario()
+    const other = await createUser(Role.TECHNICIAN, "outrotec@test.com", ["08:00"])
+
+    expect((await request(app).post("/tickets").set(...auth).send(body)).status).toBe(201)
+    expect((await request(app).post("/tickets").set(...auth).send({ ...body, scheduledDate: "2099-01-06" })).status).toBe(201)
+    expect((await request(app).post("/tickets").set(...auth).send({ ...body, technicianId: other.id })).status).toBe(201)
+  })
+
+  it("rejeita data inválida, passado, fim de semana e hora fora da agenda do técnico", async () => {
+    const { auth, body, slotsPath } = await schedulingScenario()
+
+    for (const change of [
+      { scheduledDate: "2099-02-31" },
+      { scheduledDate: "05/01/2099" },
+      { scheduledDate: pastMonday },
+      { scheduledDate: saturday },
+      { scheduledHour: "10:00" },
+      { scheduledHour: "08:30" },
+    ]) {
+      expect((await request(app).post("/tickets").set(...auth).send({ ...body, ...change })).status).toBe(400)
+    }
+
+    expect((await request(app).get(slotsPath).query({ date: saturday }).set(...auth)).body).toEqual([])
+    expect((await request(app).get(slotsPath).query({ date: pastMonday }).set(...auth)).body).toEqual([])
+    expect((await request(app).get(slotsPath).query({ date: "ontem" }).set(...auth)).status).toBe(400)
+    expect((await request(app).get(slotsPath).query({ date: monday })).status).toBe(401)
+  })
+
+  it("considera passado no horário de Brasília, mesmo com o servidor em UTC", () => {
+    // 23:30 UTC do dia 4 são 20:30 do dia 4 em Brasília.
+    const now = new Date("2026-11-04T23:30:00Z")
+    expect(isPastSlot("2026-11-04", "19:00", now)).toBe(true)
+    expect(isPastSlot("2026-11-05", "08:00", now)).toBe(false)
+    // 02:30 UTC do dia 5 ainda são 23:30 do dia 4 em Brasília.
+    expect(isPastSlot("2026-11-05", "08:00", new Date("2026-11-05T02:30:00Z"))).toBe(false)
+    // 16:30 UTC são 13:30 em Brasília: as 14:00 ainda não começaram. Às 14:00 em ponto, o horário já passou.
+    expect(isPastSlot("2026-11-04", "14:00", new Date("2026-11-04T16:30:00Z"))).toBe(false)
+    expect(isPastSlot("2026-11-04", "14:00", new Date("2026-11-04T17:00:00Z"))).toBe(true)
   })
 })
 
@@ -191,11 +280,16 @@ describe("Chamados", () => {
       service: { title: "VPN", amount: 100 },
       client: { name: Role.CLIENT },
       technician: { name: Role.TECHNICIAN, email: "tech@test.com" },
+      scheduledDate: monday,
+      scheduledHour: "08:00",
       additionalServices: [],
       total: 100,
     })
 
-    const body = { title: "T", description: "D", serviceId: data.service.id, technicianId: data.technician.id }
+    const body = {
+      title: "T", description: "D", serviceId: data.service.id, technicianId: data.technician.id,
+      scheduledDate: monday, scheduledHour: "08:00",
+    }
     expect((await request(app).post("/tickets").set(...bearer(data.techToken)).send(body)).status).toBe(403)
     expect((await request(app).post("/tickets").set(...bearer(data.adminToken)).send(body)).status).toBe(403)
   })
@@ -203,7 +297,10 @@ describe("Chamados", () => {
   it("exige técnico e serviço válidos", async () => {
     const data = await scenario()
     const auth = bearer(data.clientToken)
-    const body = { title: "T", description: "D", serviceId: data.service.id, technicianId: data.technician.id }
+    const body = {
+      title: "T", description: "D", serviceId: data.service.id, technicianId: data.technician.id,
+      scheduledDate: monday, scheduledHour: "08:00",
+    }
 
     const { technicianId: _technicianId, ...withoutTechnician } = body
     expect((await request(app).post("/tickets").set(...auth).send(withoutTechnician)).status).toBe(400)
