@@ -3,6 +3,7 @@ import { Prisma, Role, TicketStatus } from "@prisma/client"
 import { prisma } from "../prisma"
 import { AppError } from "../utils/AppError"
 import { presentTicket, ticketInclude } from "../utils/presenters"
+import { isPastSlot, isWeekend, toDatabaseDate } from "../utils/schedule"
 import { idParamsSchema } from "../schemas/users-schema"
 import {
   additionalServiceParamsSchema, additionalServiceSchema, createTicketSchema, updateTicketStatusSchema,
@@ -32,28 +33,38 @@ async function findManagedTicket(id: string, user: NonNullable<Request["user"]>)
 
 export class TicketsController {
   async create(request: Request, response: Response) {
-    const { title, description, serviceId, technicianId } = createTicketSchema.parse(request.body)
+    const { title, description, serviceId, technicianId, scheduledDate, scheduledHour } = createTicketSchema.parse(request.body)
 
     const service = await prisma.service.findFirst({ where: { id: serviceId, isActive: true } })
     if (!service) throw new AppError("Serviço indisponível", 400)
 
-    // O chamado não tem data nem hora: disponível é o técnico com algum horário cadastrado.
     const technician = await prisma.user.findFirst({
-      where: { id: technicianId, role: Role.TECHNICIAN, NOT: { availability: { isEmpty: true } } },
+      where: { id: technicianId, role: Role.TECHNICIAN, availability: { has: scheduledHour } },
       select: { id: true },
     })
-    if (!technician) throw new AppError("Técnico indisponível", 400)
+    if (!technician) throw new AppError("Técnico indisponível neste horário", 400)
+    if (isWeekend(scheduledDate)) throw new AppError("Não há atendimento aos fins de semana", 400)
+    if (isPastSlot(scheduledDate, scheduledHour)) throw new AppError("Escolha um horário futuro", 400)
 
-    const ticket = await prisma.ticket.create({
-      data: {
-        title, description, serviceId, technicianId,
-        clientId: request.user!.id,
-        // Guarda o preço de agora: mudar o catálogo depois não altera este chamado.
-        servicePrice: service.price,
-      },
-      include: ticketInclude,
-    })
-    return response.status(201).json(presentTicket(ticket))
+    try {
+      const ticket = await prisma.ticket.create({
+        data: {
+          title, description, serviceId, technicianId, scheduledHour,
+          scheduledDate: toDatabaseDate(scheduledDate),
+          clientId: request.user!.id,
+          // Guarda o preço de agora: mudar o catálogo depois não altera este chamado.
+          servicePrice: service.price,
+        },
+        include: ticketInclude,
+      })
+      return response.status(201).json(presentTicket(ticket))
+    } catch (error) {
+      // O índice único decide quando dois clientes pedem o mesmo horário ao mesmo tempo.
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        throw new AppError("Este horário acabou de ser ocupado. Escolha outro.", 409)
+      }
+      throw error
+    }
   }
 
   async index(request: Request, response: Response) {

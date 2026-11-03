@@ -42,6 +42,8 @@ export function presentTicket(ticket: PresentableTicket) {
     title: ticket.title,
     description: ticket.description,
     status: statusNames[ticket.status],
+    scheduledDate: ticket.scheduledDate?.toISOString().slice(0, 10) ?? null,
+    scheduledHour: ticket.scheduledHour,
     createdAt: ticket.createdAt,
     updatedAt: ticket.updatedAt,
     service: { title: ticket.service.name, amount: ticket.servicePrice.toNumber() },
