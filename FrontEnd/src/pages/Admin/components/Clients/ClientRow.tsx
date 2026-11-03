@@ -12,9 +12,10 @@ import { useState } from "react"
 
 type Props = {
     client: Client
+    onChanged: () => void
 }
 
-export function ClientRow({ client }: Props) {
+export function ClientRow({ client, onChanged }: Props) {
     const [modalDel, setModalDel] = useState<boolean>(false)
     const [modalEdit, setModalEdit] = useState<boolean>(false)
 
@@ -63,11 +64,11 @@ export function ClientRow({ client }: Props) {
             </tr>
 
             {modalDel &&
-                <DeleteClientModal modalDel={modalDel} setModalDel={setModalDel} client={client} />
+                <DeleteClientModal modalDel={modalDel} setModalDel={setModalDel} client={client} onChanged={onChanged} />
             }
 
             {modalEdit &&
-                <EditClientModal modalEdit={modalEdit} setModalEdit={setModalEdit} client={client} />
+                <EditClientModal modalEdit={modalEdit} setModalEdit={setModalEdit} client={client} onChanged={onChanged} />
             }
         </>
     )

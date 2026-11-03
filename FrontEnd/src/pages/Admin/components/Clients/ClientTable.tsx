@@ -65,6 +65,7 @@ export function ClientTable() {
                             <ClientRow
                                 key={client.id}
                                 client={client}
+                                onChanged={fetchClients}
                             />
                         ))}
                     </tbody>

@@ -3,6 +3,9 @@ import { Button } from "../../../../components/Button"
 import { Input } from "../../../../components/Input"
 import { Avatar } from "../../../../components/Avatar"
 import type { Client } from "../../../../types/Client"
+import { api } from "../../../../services/api"
+import { getErrorMessage } from "../../../../utils/GetErrorMessage"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -18,9 +21,12 @@ type Props = {
     modalEdit: boolean
     setModalEdit: (open: boolean) => void
     client: Client
+    onChanged: () => void
 }
 
-export function EditClientModal({ modalEdit, setModalEdit, client }: Props) {
+export function EditClientModal({ modalEdit, setModalEdit, client, onChanged }: Props) {
+    const [error, setError] = useState("")
+
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<EditClientData>({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -29,8 +35,15 @@ export function EditClientModal({ modalEdit, setModalEdit, client }: Props) {
         }
     })
 
-    function onSubmit(data: EditClientData) {
-        console.log(data)
+    async function onSubmit(data: EditClientData) {
+        try {
+            setError("")
+            await api.put(`/clients/${client.id}`, data)
+            setModalEdit(false)
+            onChanged()
+        } catch (error) {
+            setError(getErrorMessage(error, "Não foi possível salvar o cliente"))
+        }
     }
 
     return (
@@ -45,6 +58,10 @@ export function EditClientModal({ modalEdit, setModalEdit, client }: Props) {
                 <Input legenda="E-mail" type="email" autoComplete="email" {...register("email")}/>
                 {errors.email && (
                     <p id="client-email-error" role="alert" className="text-xs text-feedback-danger">{errors.email.message}</p>
+                )}
+
+                {error && (
+                    <p role="alert" className="text-xs text-feedback-danger">{error}</p>
                 )}
 
                 <div className="-mx-6 border-t border-gray-500 px-6 pt-6">
