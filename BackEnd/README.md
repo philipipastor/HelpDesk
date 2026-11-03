@@ -1,0 +1,126 @@
+# HelpDesk API
+
+API RESTful de gerenciamento de chamados usando Node.js, TypeScript, Express, PostgreSQL, Prisma, Zod, JWT, bcryptjs, Jest e Supertest.
+
+## Requisitos
+
+- Node.js 22+
+- Docker + Docker Compose (forma mais simples), ou PostgreSQL local
+
+## Rodando com Docker
+
+```bash
+docker compose up --build
+```
+
+A API ficará em `http://localhost:3333` e o PostgreSQL em `localhost:5432`.
+
+O container executa as migrations, roda o seed e inicia a API.
+
+## Rodando localmente
+
+1. Copie `.env.example` para `.env`.
+2. Inicie um PostgreSQL e confirme `DATABASE_URL`.
+3. Instale e prepare o banco:
+
+```bash
+npm install
+npx prisma generate
+npx prisma migrate dev
+npm run seed
+npm run dev
+```
+
+## Seed
+
+O seed pode rodar mais de uma vez: não duplica usuários nem sobrescreve os existentes, e só cria os serviços em um banco sem serviços. Senha de todas as contas: `123456`.
+
+| Conta | E-mail | Horários |
+|---|---|---|
+| Admin | `admin@helpdesk.com` | — |
+| Técnico 1 | `tecnico1@helpdesk.com` | 08h às 12h e 14h às 18h |
+| Técnico 2 | `tecnico2@helpdesk.com` | 10h às 14h e 16h às 20h |
+| Técnico 3 | `tecnico3@helpdesk.com` | 12h às 16h e 18h às 22h |
+
+Também são criados 5 serviços. Troque essas senhas em ambientes reais.
+
+## Autenticação
+
+`POST /sessions` recebe:
+
+```json
+{
+  "email": "admin@helpdesk.com",
+  "password": "123456"
+}
+```
+
+A resposta contém `token` e `user`. Nas rotas protegidas envie:
+
+```text
+Authorization: Bearer SEU_TOKEN
+```
+
+## Rotas
+
+### Sessão e perfil
+- `POST /sessions` — público
+- `POST /users` — público; cria uma conta de cliente
+- `GET /users/me` — autenticado
+- `PATCH /users/me` — autenticado; altera nome e e-mail
+- `PATCH /users/me/password` — autenticado; recebe `currentPassword` e `newPassword`
+- `DELETE /users/me` — CLIENT; remove também os chamados
+
+### Admins
+- `POST /admins`, `GET /admins`, `GET /admins/:id`, `PATCH /admins/:id`, `DELETE /admins/:id` — ADMIN
+
+### Técnicos
+- `POST /technicians` — ADMIN; recebe a senha provisória. Sem `availability`, usa o horário comercial
+- `GET /technicians` — ADMIN ou CLIENT
+- `GET /technicians/:id` — ADMIN
+- `PUT /technicians/:id` — ADMIN; altera nome, e-mail e horários
+
+### Clientes
+- `GET /clients` — ADMIN
+- `PUT /clients/:id` — ADMIN
+- `DELETE /clients/:id` — ADMIN; remove também os chamados
+
+### Serviços
+- `GET /services` — público; somente o ADMIN autenticado recebe os desativados
+- `POST /services` — ADMIN; recebe `title`, `amount` e `status` (opcional)
+- `PUT /services/:id` — ADMIN; `status: false` desativa o serviço (soft delete)
+
+### Chamados
+- `POST /tickets` — CLIENT; recebe `title`, `description`, `serviceId` e `technicianId`
+- `GET /tickets`, `GET /tickets/:id` — ADMIN vê todos, CLIENT os próprios, TECHNICIAN os atribuídos
+- `PATCH /tickets/:id/status` — TECHNICIAN responsável ou ADMIN; recebe `in_progress` ou `closed`
+- `POST /tickets/:id/additional-services` — TECHNICIAN responsável; recebe `title` e `amount`
+- `DELETE /tickets/:id/additional-services/:serviceId` — TECHNICIAN responsável
+
+O status só avança: `open` pode ir para `in_progress` ou `closed`, e `in_progress` para `closed`. Chamado encerrado não aceita alteração nos adicionais.
+
+## Formato das respostas
+
+O banco usa nomes próprios (`ADMIN`, `ABERTO`, `name`, `price`, `isActive`). As respostas são convertidas em `src/utils/presenters.ts` para o formato do frontend (`admin`, `open`, `title`, `amount`, `status`).
+
+## Preço do chamado
+
+O chamado guarda em `servicePrice` o preço do serviço no momento da criação. Assim, alterar o catálogo depois não muda chamados antigos. Os serviços adicionais têm descrição e valor próprios, e o `total` é a soma calculada a cada resposta.
+
+## Disponibilidade
+
+O cliente escolhe o técnico ao criar o chamado. Como o chamado não tem data nem hora, a API considera disponível o técnico que tem pelo menos um horário cadastrado. Para reservar um horário de verdade, seria preciso adicionar data ao chamado ou criar uma agenda.
+
+## Testes
+
+Os testes são de integração e apagam os dados do banco configurado para teste. Use um banco separado.
+
+```bash
+createdb helpdesk_test
+DATABASE_URL="postgresql://helpdesk:helpdesk@localhost:5432/helpdesk_test?schema=public" npx prisma migrate deploy
+TEST_DATABASE_URL="postgresql://helpdesk:helpdesk@localhost:5432/helpdesk_test?schema=public" npm test
+```
+
+No Windows/PowerShell, defina `TEST_DATABASE_URL` antes de rodar os comandos.
+
+Os testes de `tests/helpdesk.integration.spec.ts` cobrem sessão, perfil, técnicos, clientes, serviços e chamados, incluindo as permissões de cada papel.
