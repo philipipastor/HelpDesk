@@ -4,7 +4,12 @@ Sistema de gerenciamento de chamados de suporte, com API em Node.js e interface 
 
 A aplicação possui experiências distintas para **administradores, técnicos e clientes**, com rotas e funcionalidades organizadas de acordo com o perfil do usuário.
 
-> **Status:** projeto em desenvolvimento. A interface já está integrada à API, e o deploy ainda não foi feito.
+## Deploy
+
+- **Aplicação:** https://help-desk-six-kappa.vercel.app (Vercel)
+- **API:** https://helpdesk-api-gcw6.onrender.com (Render, com banco PostgreSQL no Neon)
+
+A API usa o plano gratuito do Render e dorme após 15 minutos sem uso. O primeiro acesso depois disso pode levar cerca de um minuto.
 
 ## Funcionalidades
 
@@ -81,7 +86,7 @@ A interface ficará disponível em `http://localhost:5173`.
 
 ### Contas iniciais
 
-A senha de todas as contas é `123456`. Troque essas senhas em ambientes reais.
+No ambiente local, a senha de todas as contas é `123456`. No deploy, ela vem da variável `SEED_PASSWORD` e não é publicada.
 
 | Perfil | E-mail |
 |---|---|
@@ -94,7 +99,7 @@ Contas de cliente são criadas pela própria tela de cadastro.
 
 ## Documentação da API
 
-As rotas, as regras de negócio, a execução sem Docker e os testes estão descritos no [README do back-end](BackEnd/README.md).
+As rotas, as regras de negócio, a execução sem Docker e os testes estão descritos no [README do back-end](BackEnd/README.md). A configuração da interface está no [README do front-end](FrontEnd/README.md).
 
 ## Aprendizados
 
