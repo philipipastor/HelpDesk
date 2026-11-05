@@ -1,10 +1,10 @@
-import { TicketDetails } from "../pages/CLient/TicketDetails"
+import { TicketDetails } from "../pages/Client/TicketDetails"
 import { Routes, Route } from "react-router"
 
 import { AppLayout } from "../components/layout/AppLayout"
 
-import { Tickets } from "../pages/CLient/ClientTicket"
-import { NewTicket } from "../pages/CLient/NewTicket"
+import { Tickets } from "../pages/Client/ClientTicket"
+import { NewTicket } from "../pages/Client/NewTicket"
 import { NotFound } from "../pages/NotFound"
 
 export function ClientRoutes(){

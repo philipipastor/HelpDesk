@@ -54,7 +54,7 @@ HelpDesk/
     └── src/
         ├── components/
         ├── context/
-        ├── pages/    # Admin, CLient e Technician
+        ├── pages/    # Admin, Client e Technician
         ├── routes/
         ├── services/
         ├── types/
