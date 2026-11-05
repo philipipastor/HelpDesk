@@ -34,8 +34,15 @@ const services = [
   { name: "Backup e recuperação de dados", price: 200 },
 ]
 
+// Em produção a senha inicial vem do ambiente: a senha de exemplo nunca fica valendo no site publicado.
+function seedPassword() {
+  if (process.env.SEED_PASSWORD) return process.env.SEED_PASSWORD
+  if (process.env.NODE_ENV === "production") throw new Error("Defina SEED_PASSWORD para criar as contas iniciais")
+  return "123456"
+}
+
 async function main() {
-  const password = await hash("123456", 10)
+  const password = await hash(seedPassword(), 10)
 
   // O container roda o seed a cada inicialização: upsert não duplica nem sobrescreve usuários existentes.
   for (const user of users) {
