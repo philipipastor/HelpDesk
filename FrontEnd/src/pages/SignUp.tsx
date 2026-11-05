@@ -34,9 +34,8 @@ export function SignUp(){
 
         try {
             await api.post("/users", data)
-            if(confirm("Cadastro concluído com sucesso, deseja seguir para a página de login?")){
-                navigate("/")
-            }
+            // Vai direto para o login: o confirm() podia ser cancelado ou bloqueado pelo navegador e deixava o cliente parado aqui.
+            navigate("/", { state: { registeredEmail: data.email } })
 
         } catch (error) {
             if(error instanceof AxiosError){

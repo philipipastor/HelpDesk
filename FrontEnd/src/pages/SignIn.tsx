@@ -6,7 +6,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
-import { useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 
 import { z } from "zod"
 
@@ -25,8 +25,12 @@ export function SignIn() {
 
     const [error, setError] = useState("")
 
+    const location = useLocation()
+    const registeredEmail: string | undefined = location.state?.registeredEmail
+
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignInData>({
-        resolver: zodResolver(schema)
+        resolver: zodResolver(schema),
+        defaultValues: { email: registeredEmail ?? "" }
     })
 
     const navigate = useNavigate()
@@ -62,6 +66,12 @@ export function SignIn() {
                         Entre usando seu e-mail e senha cadastrados
                     </p>
                 </div>
+
+                {registeredEmail && (
+                    <p role="status" className="mt-4 rounded-md border border-feedback-done px-3 py-2 text-sm text-feedback-done">
+                        Conta criada. Digite sua senha para entrar.
+                    </p>
+                )}
 
                 <form className="mt-4 space-y-2.5" onSubmit={handleSubmit(onSubmit)} noValidate>
                     <Input
