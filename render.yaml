@@ -1,12 +1,6 @@
-# Blueprint do Render: cria o banco e a API no plano gratuito.
-# Segredos não ficam aqui: o JWT_SECRET é gerado pelo Render, e a senha inicial é digitada no painel.
-databases:
-  - name: helpdesk-db
-    plan: free
-    region: virginia
-    databaseName: helpdesk
-    user: helpdesk
-
+# Blueprint do Render: cria a API no plano gratuito.
+# O banco fica no Neon, porque o Render permite um único banco grátis por conta.
+# Segredos não ficam aqui: o JWT_SECRET é gerado pelo Render, e o endereço do banco e a senha inicial são digitados no painel.
 services:
   - type: web
     name: helpdesk-api
@@ -23,9 +17,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        fromDatabase:
-          name: helpdesk-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
