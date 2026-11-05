@@ -1,0 +1,36 @@
+# Blueprint do Render: cria o banco e a API no plano gratuito.
+# Segredos não ficam aqui: o JWT_SECRET é gerado pelo Render, e a senha inicial é digitada no painel.
+databases:
+  - name: helpdesk-db
+    plan: free
+    region: virginia
+    databaseName: helpdesk
+    user: helpdesk
+
+services:
+  - type: web
+    name: helpdesk-api
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./BackEnd/Dockerfile
+    dockerContext: ./BackEnd
+    healthCheckPath: /health
+    buildFilter:
+      paths:
+        - BackEnd/**
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: helpdesk-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 1d
+      - key: SEED_PASSWORD
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
