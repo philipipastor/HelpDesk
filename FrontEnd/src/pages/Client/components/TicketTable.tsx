@@ -38,7 +38,7 @@ export function TicketTable() {
                 <thead>
                     <tr className="border-b border-gray-500 text-left">
                         <th className="w-19 px-3 py-4 text-xs font-normal text-gray-400 lg:w-auto">Atualizado em</th>
-                        <th className="hidden px-3 py-4 text-xs font-normal text-gray-400 lg:table-cell">ID</th>
+                        <th className="hidden px-3 py-4 whitespace-nowrap text-xs font-normal text-gray-400 lg:table-cell">ID</th>
                         <th className="px-3 py-4 text-xs font-normal text-gray-400">Título</th>
                         <th className="hidden px-3 py-4 text-xs font-normal text-gray-400 lg:table-cell">Serviço</th>
                         <th className="hidden px-3 py-4 text-xs font-normal text-gray-400 lg:table-cell">Valor total</th>

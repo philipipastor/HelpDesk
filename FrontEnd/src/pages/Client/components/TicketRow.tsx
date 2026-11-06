@@ -22,7 +22,7 @@ export function TicketRow({ ticket }: Props) {
                 {formatDate(ticket.updatedAt)}
             </td>
 
-            <td className="hidden px-4 py-3 text-xs font-medium text-gray-100 lg:table-cell">
+            <td className="hidden px-4 py-3 whitespace-nowrap text-xs font-medium text-gray-100 lg:table-cell">
                 {ticket.code}
             </td>
 
